@@ -1,0 +1,7 @@
+Controller:
+
+Hat flags, die gestetzt werden ,wenn die Berechnung zu Ende ist. CPU kann die Flags auslesen und entsprechend lange die Pipeline stallen.
+
+Wie weiß man das die Berechung fertig ist/ werden Änderungen bemerkt?:
+-Ein Bit was sich nach jeder Rechnung immer flipt.
+-Ein fester Takt nach dem die Rechung fertig seien muss.
