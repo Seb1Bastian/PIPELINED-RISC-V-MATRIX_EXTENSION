@@ -1,6 +1,6 @@
 # PIPELINED-RISC-V-EXTENSION
 Test
 
-New Instructions:\\
-toAccelerator ?, Offset(xRegister),   Opcode: 1110000\\
-fromAccelerator ?, Offset(xRegister), Opcode: 1110001
+New Instructions:<br>
+toAccelerator ?, Offset(xRegister),   Opcode: 1110000 <br>
+fromAccelerator ?, Offset(xRegister), Opcode: 1110001 <br>
