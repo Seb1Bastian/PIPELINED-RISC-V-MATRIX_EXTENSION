@@ -5,7 +5,9 @@ use ieee.numeric_std.all;
 entity pipe_risc_v is
     port(
         clk : in std_logic;
-        reset : in std_logic
+        reset : in std_logic;
+        toAccelerator_w : out std_logic;
+        dataToAccelerator : out std_logic_vector(31 downto 0)
     );
 end pipe_risc_v;
 
@@ -39,6 +41,11 @@ architecture rtl of pipe_risc_v is
     signal rd_m             : std_logic_vector(4 downto 0) := "00000";
     signal rd_w             : std_logic_vector(4 downto 0) := "00000";
     signal instr_d_o        : std_logic_vector(31 downto 0) := (others => '0');
+
+    --NNsignals
+    signal toAccelerator_d  : std_logic;
+    signal fromAccelerator_d: std_logic;
+    signal toAccelerator_w  : std_logic;
 
 
 
@@ -75,6 +82,9 @@ architecture rtl of pipe_risc_v is
                 rs2_e               => rs2_e,
                 regwrite_w          => regwrite_w,
                 rd_e                => rd_e
+                toAccelerator_d     => toAccelerator_d,
+                fromAccelerator_d   => fromAccelerator_d,
+                toAccelerator_w     => toAccelerator_w
             );
 
         pcsrc_e <= (branch_e and zero) or jump_e ;
@@ -92,7 +102,9 @@ architecture rtl of pipe_risc_v is
                 branch_d        => branch_d,
                 alucontrol_d    => alucontrol_d,
                 alusrc_d        => alusrc_d,
-                immsrc_d        => immsrc_d
+                immsrc_d        => immsrc_d,
+                toAccelerator_d => toAccelerator_d,
+                fromAccelerator_d => fromAccelerator_d
             );
 
           --instantiation control unit

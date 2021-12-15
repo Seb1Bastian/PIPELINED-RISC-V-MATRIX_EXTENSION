@@ -39,7 +39,15 @@ entity reg_de is
         pc_e            : out std_logic_vector(31 downto 0);
         rd_e            : buffer std_logic_vector(11 downto 7);
         immext_e        : buffer std_logic_vector(31 downto 0);
-        pcplus4_e       : out std_logic_vector(31 downto 0)
+        pcplus4_e       : out std_logic_vector(31 downto 0);
+
+        --NN
+        --inputs
+        fromAccelerator_d:in std_logic;
+        toAccelerator_d : in std_logic;
+        --outputs
+        fromAccelerator_e:out std_logic;
+        toAccelerator_e : out std_logic
     );
 end reg_de;
 
@@ -50,12 +58,14 @@ architecture rtl of reg_de is
     type ram_type_3 is array(0 downto 0) of std_logic_vector(2 downto 0);
     type ram_type_2 is array(0 downto 0) of std_logic_vector(1 downto 0);
     type ram_type_1 is array(4 downto 0) of std_logic;
+    type ram_nn_signals is array(1 downto 0) of std_logic;
 
     signal memory_32    : ram_type_32;
     signal memory_5     : ram_type_5;
     signal memory_3     : ram_type_3;
     signal memory_2     : ram_type_2;
     signal memory_1     : ram_type_1;
+    signal nn_signals   : ram_nn_signals;
 
     begin
         process(clk, clr_de) begin
@@ -66,6 +76,7 @@ architecture rtl of reg_de is
                 memory_3    <= (others => (others => '0'));
                 memory_2    <= (others => (others => '0'));
                 memory_1    <= (others => '0');
+                nn_signals  <= (others => '0');
             else 
               memory_32(0)    <= rd1;
               memory_32(1)    <= rd2;
@@ -86,6 +97,9 @@ architecture rtl of reg_de is
               memory_1(2)     <= jump_d;
               memory_1(3)     <= branch_d;
               memory_1(4)     <= alusrc_d;
+
+              nn_signals(0)   <= fromAccelerator_d;
+              nn_signals(1)   <= toAccelerator_d;
             end if;
           end if;
         end process;
@@ -108,6 +122,10 @@ architecture rtl of reg_de is
         jump_e          <= memory_1(2);
         branch_e        <= memory_1(3);
         alusrc_e        <= memory_1(4);
+
+
+        fromAccelerator_e <= nn_signals(0);
+        toAccelerator_e   <= nn_signals(1);
 
 
 

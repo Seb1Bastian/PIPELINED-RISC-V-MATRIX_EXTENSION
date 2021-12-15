@@ -16,7 +16,14 @@ entity control_unit is
         branch_d        : out std_logic;
         alucontrol_d    : out std_logic_vector(2 downto 0);
         alusrc_d        : out std_logic;
-        immsrc_d        : out std_logic_vector(1 downto 0)
+        immsrc_d        : out std_logic_vector(1 downto 0);
+
+        --NN
+        --inputs
+        --outputs
+        toAccelerator_d : out std_logic;
+        fromAccelerator_d:out std_logic
+
     );
 end control_unit;
 
@@ -36,7 +43,9 @@ architecture rtl of control_unit is
                 ImmSrc      => immsrc_d,
                 RegWrite    => regwrite_d,
                 ALUOp       => ALUOp,
-                ResultSrc   => resultsrc_d
+                ResultSrc   => resultsrc_d,
+                toAccelerator => toAccelerator_d,
+                fromAccelerator => fromAccelerator_d
             );
 
         inst_aludecoder : entity work.ALU_Decoder(rtl)

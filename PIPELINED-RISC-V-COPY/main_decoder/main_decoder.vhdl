@@ -12,14 +12,18 @@ entity main_decoder is
          ImmSrc     : out std_logic_vector(1 downto 0);
          RegWrite   : out std_logic;
          ALUOp      : out std_logic_vector(1 downto 0);
-         ResultSrc  : out std_logic_vector(1 downto 0)
+         ResultSrc  : out std_logic_vector(1 downto 0);
+         toAccelerator : out std_logic;
+         fromAccelerator : out std_logic
     );
 end main_decoder;
 
 architecture rtl of main_decoder is
     signal controls : std_logic_vector(10 downto 0);
+    signal NNcontrols : std_logic_vector(1 downto 0);
     begin
         process(op)begin
+            NNcontrols <= "00";
             case op is
                 when "0000011" => controls <= "10010010000"; --lw
                 when "0100011" => controls <= "00111--0000"; --sw
@@ -27,6 +31,11 @@ architecture rtl of main_decoder is
                 when "1100011" => controls <= "01000--1010"; --beq
                 when "0010011" => controls <= "10010000100"; --I-type ALU
                 when "1101111" => controls <= "111-0100--1"; --jal
+
+                --NN
+                when "1110000" => controls <= "00010010000"; NNcontrols <= "10"; --toAccelerator
+                when "1110001" => controls <= "00111--0000"; NNcontrols <= "01"; --fromAccelerator
+
                 when others    => controls <= "-----------"; --undefined for other cases
             end case;
         end process;
@@ -39,5 +48,8 @@ architecture rtl of main_decoder is
         branch      <= controls(3);
         ALUOp       <= controls(2 downto 1);
         jump        <= controls(0);
+
+        toAccelerator <= NNcontrols(1);
+        fromAccelerator <= NNcontrols(0);
 
     end rtl;

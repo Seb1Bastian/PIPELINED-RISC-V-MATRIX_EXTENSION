@@ -21,7 +21,13 @@ entity reg_em is
         aluresult_m     : buffer std_logic_vector(31 downto 0);
         writedata_m     : out std_logic_vector(31 downto 0);
         rd_m            : buffer std_logic_vector(11 downto 7);
-        pcplus4_m       : out std_logic_vector(31 downto 0)
+        pcplus4_m       : out std_logic_vector(31 downto 0);
+
+        --NN
+        --inputs
+        toAccelerator_e : in std_logic;
+        --outputs
+        toAccelerator_m : out std_logic
     );
 end reg_em;
 
@@ -31,11 +37,13 @@ architecture rtl of reg_em is
     type ram_type_5 is array(0 downto 0 ) of std_logic_vector(4 downto 0);
     type ram_type_2 is array(0 downto 0) of std_logic_vector(1 downto 0);
     type ram_type_1 is array(1 downto 0) of std_logic;
+    type ram_nn_signals is array(0 downto 0) of std_logic;
 
     signal memory_32    : ram_type_32;
     signal memory_5     : ram_type_5;
     signal memory_2     : ram_type_2;
     signal memory_1     : ram_type_1;
+    signal nn_signals   : ram_nn_signals;
 
 
     begin
@@ -52,6 +60,7 @@ architecture rtl of reg_em is
 
                 memory_1(0)     <= regwrite_e;
                 memory_1(1)     <= memwrite_e;
+                nn_signals(0)   <= toAccelerator_e;
             end if;
         end process;
 
@@ -65,5 +74,7 @@ architecture rtl of reg_em is
 
         regwrite_m      <= memory_1(0);
         memwrite_m      <= memory_1(1);
+
+        toAccelerator_m <= nn_signals(0);
 
     end rtl;
