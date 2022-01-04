@@ -26,8 +26,10 @@ entity reg_em is
         --NN
         --inputs
         toAccelerator_e : in std_logic;
+        onlyByte_e      : in std_logic;
         --outputs
-        toAccelerator_m : out std_logic
+        toAccelerator_m : out std_logic;
+        onlyByte_m      : out std_logic
     );
 end reg_em;
 
@@ -37,7 +39,7 @@ architecture rtl of reg_em is
     type ram_type_5 is array(0 downto 0 ) of std_logic_vector(4 downto 0);
     type ram_type_2 is array(0 downto 0) of std_logic_vector(1 downto 0);
     type ram_type_1 is array(1 downto 0) of std_logic;
-    type ram_nn_signals is array(0 downto 0) of std_logic;
+    type ram_nn_signals is array(1 downto 0) of std_logic;
 
     signal memory_32    : ram_type_32;
     signal memory_5     : ram_type_5;
@@ -61,6 +63,7 @@ architecture rtl of reg_em is
                 memory_1(0)     <= regwrite_e;
                 memory_1(1)     <= memwrite_e;
                 nn_signals(0)   <= toAccelerator_e;
+                nn_signals(1)   <= onlyByte_e;
             end if;
         end process;
 
@@ -76,5 +79,6 @@ architecture rtl of reg_em is
         memwrite_m      <= memory_1(1);
 
         toAccelerator_m <= nn_signals(0);
+        onlyByte_m <= nn_signals(1);
 
     end rtl;

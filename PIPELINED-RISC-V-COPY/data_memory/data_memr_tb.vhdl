@@ -12,11 +12,12 @@ architecture test of data_memr_tb is
     signal clk : std_logic := '0';
     signal write_en : std_logic := '0';
     signal read_data : std_logic_vector(31 downto 0) := (others => '0');
+    signal byte_en : std_logic := '0';
 
     begin
         inst_data_memr : entity work.data_memr(rtl)
                         port map (addr_port => addr_port, write_data => write_data, clk => clk, 
-                                  write_en => write_en, read_data => read_data);
+                                  write_en => write_en, read_data => read_data, byte_en => byte_en);
         
          process begin
             clk <= '1';

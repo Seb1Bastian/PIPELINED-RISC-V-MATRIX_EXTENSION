@@ -6,7 +6,7 @@ entity pipe_risc_v is
     port(
         clk : in std_logic;
         reset : in std_logic;
-        toAccelerator_w : out std_logic;
+        toAccelerator : out std_logic;
         dataToAccelerator : out std_logic_vector(31 downto 0)
     );
 end pipe_risc_v;
@@ -45,7 +45,8 @@ architecture rtl of pipe_risc_v is
     --NNsignals
     signal toAccelerator_d  : std_logic;
     signal fromAccelerator_d: std_logic;
-    signal toAccelerator_w  : std_logic;
+    signal onlyByte_d       : std_logic;
+    --signal toAccelerator_w  : std_logic;
 
 
 
@@ -81,10 +82,12 @@ architecture rtl of pipe_risc_v is
                 rs1_e               => rs1_e,
                 rs2_e               => rs2_e,
                 regwrite_w          => regwrite_w,
-                rd_e                => rd_e
+                rd_e                => rd_e,
                 toAccelerator_d     => toAccelerator_d,
                 fromAccelerator_d   => fromAccelerator_d,
-                toAccelerator_w     => toAccelerator_w
+                onlyByte_d          => onlyByte_d,
+                toAccelerator       => toAccelerator,
+                dataToAccelerator   => dataToAccelerator
             );
 
         pcsrc_e <= (branch_e and zero) or jump_e ;
@@ -104,7 +107,8 @@ architecture rtl of pipe_risc_v is
                 alusrc_d        => alusrc_d,
                 immsrc_d        => immsrc_d,
                 toAccelerator_d => toAccelerator_d,
-                fromAccelerator_d => fromAccelerator_d
+                fromAccelerator_d => fromAccelerator_d,
+                onlyByte_d      => onlyByte_d
             );
 
           --instantiation control unit

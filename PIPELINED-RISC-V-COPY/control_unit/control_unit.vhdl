@@ -22,7 +22,8 @@ entity control_unit is
         --inputs
         --outputs
         toAccelerator_d : out std_logic;
-        fromAccelerator_d:out std_logic
+        fromAccelerator_d:out std_logic;
+        onlyByte_d      : out std_logic
 
     );
 end control_unit;
@@ -45,7 +46,8 @@ architecture rtl of control_unit is
                 ALUOp       => ALUOp,
                 ResultSrc   => resultsrc_d,
                 toAccelerator => toAccelerator_d,
-                fromAccelerator => fromAccelerator_d
+                fromAccelerator => fromAccelerator_d,
+                onlyByte  => onlyByte_d
             );
 
         inst_aludecoder : entity work.ALU_Decoder(rtl)

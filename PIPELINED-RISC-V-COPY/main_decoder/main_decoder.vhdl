@@ -13,17 +13,22 @@ entity main_decoder is
          RegWrite   : out std_logic;
          ALUOp      : out std_logic_vector(1 downto 0);
          ResultSrc  : out std_logic_vector(1 downto 0);
-         toAccelerator : out std_logic;
-         fromAccelerator : out std_logic
+
+         --NN
+         toAccelerator   : out std_logic;
+         fromAccelerator : out std_logic;
+         onlyByte        : out std_logic
     );
 end main_decoder;
 
 architecture rtl of main_decoder is
     signal controls : std_logic_vector(10 downto 0);
     signal NNcontrols : std_logic_vector(1 downto 0);
+    signal bytecontrol : std_logic;
     begin
         process(op)begin
             NNcontrols <= "00";
+            bytecontrol <= '0';
             case op is
                 when "0000011" => controls <= "10010010000"; --lw
                 when "0100011" => controls <= "00111--0000"; --sw
@@ -33,9 +38,10 @@ architecture rtl of main_decoder is
                 when "1101111" => controls <= "111-0100--1"; --jal
 
                 --NN
-                when "1110000" => controls <= "00010010000"; NNcontrols <= "10"; --toAccelerator
-                when "1110001" => controls <= "00111--0000"; NNcontrols <= "01"; --fromAccelerator
-
+                when "1110000" => controls <= "00010010000"; NNcontrols <= "10";    --toAccelerator
+                when "1110001" => controls <= "00111--0000"; NNcontrols <= "01";    --fromAccelerator
+                when "1110010" => controls <= "10010110000";                         --loadByte (bytecontrol does not need to be 1 because Resultsrc is so choosen that the byteInput is choosen)
+                when "1110011" => controls <= "00111--0000"; bytecontrol <= '1';    --storeByte
                 when others    => controls <= "-----------"; --undefined for other cases
             end case;
         end process;
@@ -51,5 +57,6 @@ architecture rtl of main_decoder is
 
         toAccelerator <= NNcontrols(1);
         fromAccelerator <= NNcontrols(0);
+        onlyByte <= bytecontrol;
 
     end rtl;

@@ -16,9 +16,9 @@ architecture test of mux_3_tb is
     begin
         inst_mux3 : entity work.mux_3(rtl)
             port map(
-                port_in1 => port_in1,
-                port_in2 => port_in2,
-                port_in3 => port_in3,
+                a => port_in1,
+                b => port_in2,
+                c => port_in3,
                 port_out => port_out,
                 sel => sel
             );

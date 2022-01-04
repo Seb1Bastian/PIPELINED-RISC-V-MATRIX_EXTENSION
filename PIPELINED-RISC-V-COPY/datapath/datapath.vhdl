@@ -45,8 +45,10 @@ entity datapath is
         --inputs
         toAccelerator_d     : in std_logic;
         fromAccelerator_d   : in std_logic;
+        onlyByte_d          : in std_logic;
         --outputs
-        toAccelerator_w     : out std_logic
+        toAccelerator     : out std_logic;
+        dataToAccelerator : out std_logic_vector(31 downto 0)
 
     );
 end datapath;
@@ -99,6 +101,10 @@ architecture rtl of datapath is
     signal toAccelerator_m      : std_logic;
     signal toAccelerator_w      : std_logic;
     signal fromAccelerator_e    : std_logic;
+    signal aluresultbyte_w      : std_logic_vector(31 downto 0);
+    signal onlyByte_e           : std_logic;
+    signal onlyByte_m           : std_logic;
+    signal dataToAccelerator_w  : std_logic_vector(31 downto 0);
 
     begin
         --instantiation multiplexer 2 to 1
@@ -194,6 +200,7 @@ architecture rtl of datapath is
                 pcplus4_d       => pcplus4_d,
                 toAccelerator_d => toAccelerator_d,
                 fromAccelerator_d => fromAccelerator_d,
+                onlyByte_d      => onlyByte_d,
 
                 regwrite_e      => regwrite_e,
                 resultsrc_e     => resultsrc_e,
@@ -211,7 +218,8 @@ architecture rtl of datapath is
                 immext_e        => immext_e,
                 pcplus4_e       => pcplus4_e,
                 toAccelerator_e => toAccelerator_e,
-                fromAccelerator_e => fromAccelerator_e
+                fromAccelerator_e => fromAccelerator_e,
+                onlyByte_e      => onlyByte_e
 
             );
 
@@ -281,6 +289,8 @@ architecture rtl of datapath is
                     rd_e            => rd_e,
                     pcplus4_e       => pcplus4_e,
                     toAccelerator_e => toAccelerator_e,
+                    onlyByte_e      => onlyByte_e,
+
                     regwrite_m      => regwrite_m,
                     resultsrc_m     => resultsrc_m,
                     memwrite_m      => memwrite_m,
@@ -288,7 +298,9 @@ architecture rtl of datapath is
                     writedata_m     => writedata_m,
                     rd_m            => rd_m,
                     pcplus4_m       => pcplus4_m,
-                    toAccelerator_m => toAccelerator_m
+                    toAccelerator_m => toAccelerator_m,
+                    onlyByte_m      => onlyByte_m
+
                 );
 
             --instantiation data memory
@@ -297,6 +309,7 @@ architecture rtl of datapath is
                     addr_port       => aluresult_m,
                     write_data      => writedata_m,
                     clk             => clk,
+                    byte_en         => onlyByte_m,
                     write_en        => memwrite_m,
                     read_data       => rd_memr
                 );
@@ -322,14 +335,32 @@ architecture rtl of datapath is
                     toAccelerator_w => toAccelerator_w
                 );
 
+
+            aluresultbyte_w <= x"000000" & aluresult_w(7 downto 0);
             --instantiation multiplexer 3 to 1
-            inst_mux_3 : entity work.mux_3(rtl)
+            inst_mux_4 : entity work.mux_4(rtl)
                 generic map(32)
                 port map(
                     a    => aluresult_w,
                     b    => readdata_w,
-                    c   => pcplus4_w,
-                    sel         => resultsrc_w,
+                    c    => pcplus4_w,
+                    d    => aluresultbyte_w,
+                    sel  => resultsrc_w,
                     y    => result_w
                 );
+
+
+            inst_mux_2_toAcc : entity work.mux_2(rtl)
+                generic map(32)
+                port map(
+                    port_in1    => x"00000000",
+                    port_in2    => resultsrc_w,
+                    sel         => toAccelerator_w,
+                    port_out    => dataToAccelerator_w
+                );
+
+
+            toAccelerator       <= toAccelerator_w;
+            dataToAccelerator   <= dataToAccelerator_w;
+
     end rtl;

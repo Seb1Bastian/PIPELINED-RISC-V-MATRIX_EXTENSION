@@ -45,9 +45,11 @@ entity reg_de is
         --inputs
         fromAccelerator_d:in std_logic;
         toAccelerator_d : in std_logic;
+        onlyByte_d      : in std_logic;
         --outputs
         fromAccelerator_e:out std_logic;
-        toAccelerator_e : out std_logic
+        toAccelerator_e : out std_logic;
+        onlyByte_e      : out std_logic
     );
 end reg_de;
 
@@ -58,7 +60,7 @@ architecture rtl of reg_de is
     type ram_type_3 is array(0 downto 0) of std_logic_vector(2 downto 0);
     type ram_type_2 is array(0 downto 0) of std_logic_vector(1 downto 0);
     type ram_type_1 is array(4 downto 0) of std_logic;
-    type ram_nn_signals is array(1 downto 0) of std_logic;
+    type ram_nn_signals is array(2 downto 0) of std_logic;
 
     signal memory_32    : ram_type_32;
     signal memory_5     : ram_type_5;
@@ -100,6 +102,7 @@ architecture rtl of reg_de is
 
               nn_signals(0)   <= fromAccelerator_d;
               nn_signals(1)   <= toAccelerator_d;
+              nn_signals(2)   <= onlyByte_d;
             end if;
           end if;
         end process;
@@ -126,6 +129,7 @@ architecture rtl of reg_de is
 
         fromAccelerator_e <= nn_signals(0);
         toAccelerator_e   <= nn_signals(1);
+        onlyByte_e        <= nn_signals(2);
 
 
 
