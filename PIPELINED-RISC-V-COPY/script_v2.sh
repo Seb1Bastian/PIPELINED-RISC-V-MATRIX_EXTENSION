@@ -70,6 +70,13 @@ ghdl -s mux_3/mux_3_tb.vhdl
 ghdl -a mux_3/mux_3_tb.vhdl
 ghdl -e mux_3_tb
 
+ghdl -s mux_4/mux_4.vhdl
+ghdl -a mux_4/mux_4.vhdl
+ghdl -e mux_4
+#ghdl -s mux_4/mux_4_tb.vhdl
+#ghdl -a mux_4/mux_4_tb.vhdl
+#ghdl -e mux_4_tb
+
 ghdl -s pc/pc.vhdl
 ghdl -a pc/pc.vhdl
 ghdl -e pc
