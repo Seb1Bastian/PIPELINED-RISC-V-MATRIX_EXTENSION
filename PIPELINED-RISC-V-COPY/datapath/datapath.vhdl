@@ -354,7 +354,7 @@ architecture rtl of datapath is
                 generic map(32)
                 port map(
                     port_in1    => x"00000000",
-                    port_in2    => resultsrc_w,
+                    port_in2    => result_w,
                     sel         => toAccelerator_w,
                     port_out    => dataToAccelerator_w
                 );
