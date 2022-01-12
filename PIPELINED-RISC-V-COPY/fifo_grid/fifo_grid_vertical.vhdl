@@ -41,17 +41,17 @@ architecture rtl of fifo_grid is
                             grid(i,j) <= x"00";
                         end loop ;     
                     end loop ;
-                    pos_x1 := 0;
-                    pos_x2 := differenz;
+                    pos_x1 := differenz;
+                    pos_x2 := 0;
                 elsif initialize = '1' then
-                        pos_x1 := 0;
-                        pos_x2 := differenz; 
+                    pos_x1 := differenz;
+                    pos_x2 := 0;                    
                 elsif write_en = '1' then                       --writes the input to the next free position
                     grid(pos_x1,pos_x2) <= data_in;
-                    if pos_x2 = max_size-1 then
-                        pos_x2 := differenz;
-                        if pos_x1 = size-1 then
-                            pos_x1 := 0;
+                    if pos_x2 = max_size-(1+differenz) then
+                        pos_x2 := 0;
+                        if pos_x1 = max_size-1 then
+                            pos_x1 := differenz;
                         else
                             pos_x1 := pos_x1 + 1;
                         end if;
@@ -60,15 +60,15 @@ architecture rtl of fifo_grid is
                     end if;                    
                 else
                     for i in max_size-1 downto 0 loop               --shift
-                        vector(i)<= grid(i,size-1);
+                        vector(i)<= grid(size-1,i);
                     end loop ;
-                    for i in max_size-1 downto 0 loop
-                        for j in max_size-1 downto 1 loop
-                            grid(i,j) <= grid(i,j-1);
+                    for i in max_size-1 downto 1 loop
+                        for j in max_size-1 downto 0 loop
+                            grid(i,j) <= grid(i-1,j);
                         end loop ;     
                     end loop ;
                     for i in max_size-1 downto 0 loop
-                        grid(i,0) <= x"00";
+                        grid(0,i) <= x"00";
                     end loop ;
                 end if;
             end if;

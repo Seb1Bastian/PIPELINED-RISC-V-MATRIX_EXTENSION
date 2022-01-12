@@ -9,12 +9,12 @@ entity fifo_mem is
         clk_1       : in std_logic;
         clk_2       : in std_logic;
         reset       : in std_logic;                     -- synchron Reset
-        data_in     : in std_logic_vector(7 downto 0);
+        data_in     : in std_logic_vector(31 downto 0);
         write_data  : in std_logic;
         read_data   : in std_logic;
 
         --outputs
-        data_out    : out std_logic_vector(7 downto 0);  -- is 1 when it is finished counting else 0
+        data_out    : out std_logic_vector(31 downto 0);  -- is 1 when it is finished counting else 0
         can_write   : out std_logic;
         can_read    : out std_logic
     );
@@ -23,7 +23,7 @@ end fifo_mem;
 
 architecture rtl of fifo_mem is
 
-    signal vector : BYTE_VECTOR(size-1 downto 0);
+    signal vector : FOUR_BYTE_VECTOR(size-1 downto 0);
     signal written   : std_logic_vector(size-1 downto 0);
     --signal adr_write : integer range 0 to size :=0;
     --signal adr_read  : integer range 0 to size :=0;
