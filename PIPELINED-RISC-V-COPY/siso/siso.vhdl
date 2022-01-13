@@ -21,8 +21,7 @@ end siso;
 
 architecture rtl of siso is
 
-    signal vector : type BYTE_VECTOR (size-1 downto 0);
-    Signal grid : BYTE_GRID( max_size-1 downto 0, max_size-1 downto 0); -- (0,0) is the upper left corner. (size-1, size-1) is the lower right corner.
+    signal vector : BYTE_VECTOR (size-1 downto 0);
     signal differenz : integer;
     
     begin
@@ -40,6 +39,7 @@ architecture rtl of siso is
                     vector(size-1) <= data_in;
                 end if;
             end if;
+        end process;
 
             data_out <= vector(0);
     end rtl;

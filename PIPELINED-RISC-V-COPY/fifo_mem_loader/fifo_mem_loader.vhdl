@@ -10,15 +10,15 @@ entity fifo_mem_loader is
         clk         : in std_logic;
         start       : in std_logic;
         reset       : in std_logic;  -- synchron Reset
-        next_input  : in std_logic;
+        can_read    : in std_logic;
         entries     : in integer range 0 to 255;   -- size of Matrix
 
         --outputs
         finished_load : out std_logic;
 
-        init_gird   : out std_logic;
-        write_en1   : out std_logic;
-        write_en2   : out std_logic
+        init_grid   : out std_logic;
+        write_en1   : buffer std_logic;
+        write_en2   : buffer std_logic
     );
 end fifo_mem_loader;
 
@@ -61,7 +61,7 @@ architecture rtl of fifo_mem_loader is
         process(clk)
         begin
             if rising_edge(clk) and reset = '1' then
-                matrix_entries_1 = 0;
+                matrix_entries_1 <= 0;
             elsif rising_edge(clk) and write_en1 = '1' then                          
                 if matrix_entries_1 = entries then
                     matrix_entries_1 <= 0;
@@ -74,23 +74,21 @@ architecture rtl of fifo_mem_loader is
         process(clk)
         begin
             if rising_edge(clk) and reset = '1' then
-                matrix_entries_2 = 0;
+                matrix_entries_2 <= 0;
             elsif rising_edge(clk) and write_en2 = '1' then                          
                 if matrix_entries_2 = entries then
-                    matrix_entmatrix_entries_2ries <= 0;
+                    matrix_entries_2 <= 0;
                 else
                 matrix_entries_2 <= matrix_entries_2 + 1;
                 end if;
             end if;
         end process;
 
-        process(can_read, current_state)
-        begin
-            write_en1 <= can_read and to_std_logic(current_state = matrix_1);
-            write_en2 <= can_read and to_std_logic(current_state = matrix_2);
-            read_data <= to_std_logic(current_state = matrix_1 or current_state = matrix_2);
-            finished_load <= to_std_logic(current_state = finished);
-            init_gird <= to_std_logic(current_state = init);
-        end process;
+
+        write_en1 <= '1' when can_read = '1' and current_state = matrix_1 else '0';
+        write_en2 <= '1' when can_read = '1' and current_state = matrix_2 else '0';
+        --read_data <= '1' when current_state = matrix_1 or current_state = matrix_2 else '0';
+        finished_load <= '1' when current_state = finished else '0';
+        init_grid <= '1' when current_state = init else '0';
 
 end rtl;

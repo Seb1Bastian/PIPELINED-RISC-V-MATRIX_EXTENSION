@@ -8,7 +8,7 @@ entity fifo_mem is
     port(
         clk_1       : in std_logic;
         clk_2       : in std_logic;
-        reset       : in std_logic;                     -- synchron Reset
+        reset       : in std_logic;                     -- synchron Reset (not implemented)
         data_in     : in std_logic_vector(31 downto 0);
         write_data  : in std_logic;
         read_data   : in std_logic;
@@ -24,7 +24,7 @@ end fifo_mem;
 architecture rtl of fifo_mem is
 
     signal vector : FOUR_BYTE_VECTOR(size-1 downto 0);
-    signal written   : std_logic_vector(size-1 downto 0);
+    signal written   : std_logic_vector(size-1 downto 0) := (others => '0');
     --signal adr_write : integer range 0 to size :=0;
     --signal adr_read  : integer range 0 to size :=0;
     
@@ -60,7 +60,7 @@ architecture rtl of fifo_mem is
                 if(read_data = '1' and v_adr_read < size and written(v_adr_read) = '1') then
                     data_out <= vector(v_adr_read);
                     v_adr_read := v_adr_read + 1;
-                    written(v_adr_read) <= '0'
+                    written(v_adr_read) <= '0';
                     --adr_read <= adr_read + 1;
                 elsif read_data = '1' and v_adr_read = (size) and  written(0) = '1' then
                     data_out <= vector(0);

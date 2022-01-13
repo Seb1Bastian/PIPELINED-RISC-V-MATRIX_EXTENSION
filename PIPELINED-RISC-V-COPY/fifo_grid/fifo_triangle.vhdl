@@ -20,16 +20,16 @@ end fifo_triangle;
 
 architecture rtl of fifo_triangle is
 
-    signal vector : BYTE_VECTOR(max_size-1 downto 0);
-    Signal grid : BYTE_GRID( max_size-1 downto 0, max_size-1 downto 0);
+    signal vector : BYTE_VECTOR(size-1 downto 0);
+    Signal grid : BYTE_GRID( size-1 downto 0, size-1 downto 0);
     signal differenz : integer;
     
     begin
 
         GEN_REG: for i in 1 to size-1 generate
-            siso : entity work.counter(rtl)
+            siso : entity work.siso(rtl)
                 generic map(i)
-                (clk => clk, reset => reset, write_en => write_en, data_in => data_in(i) , data_out => data_out(i) );
+                port map(clk => clk, reset => reset, write_en => write_en, data_in => data_in(i) , data_out => data_out(i) );
         end generate GEN_REG;
 
         data_out(0) <= data_in(0);

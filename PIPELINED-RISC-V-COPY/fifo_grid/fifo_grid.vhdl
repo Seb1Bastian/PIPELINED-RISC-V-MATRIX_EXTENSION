@@ -17,7 +17,7 @@ entity fifo_grid is
         data_in        : in std_logic_vector(7 downto 0);
 
         --outputs
-        data_out    : out BYTE_VECTOR(size-1 downto 0)  -- is 1 when it is finished counting else 0
+        data_out    : out BYTE_VECTOR(max_size-1 downto 0)  -- is 1 when it is finished counting else 0
     );
 end fifo_grid;
 

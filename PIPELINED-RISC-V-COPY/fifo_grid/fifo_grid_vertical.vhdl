@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
-entity fifo_grid is
+entity fifo_grid_vertical is
     generic(max_size : integer range 2 to 255 := 3); -- the max
     port(
         --inputs
@@ -17,12 +17,12 @@ entity fifo_grid is
         data_in        : in std_logic_vector(7 downto 0);
 
         --outputs
-        data_out    : out BYTE_VECTOR(size-1 downto 0)  -- is 1 when it is finished counting else 0
+        data_out    : out BYTE_VECTOR(max_size-1 downto 0)  -- is 1 when it is finished counting else 0
     );
-end fifo_grid;
+end fifo_grid_vertical;
 
 
-architecture rtl of fifo_grid is
+architecture rtl of fifo_grid_vertical is
 
     signal vector : BYTE_VECTOR(max_size-1 downto 0);
     Signal grid : BYTE_GRID( max_size-1 downto 0, max_size-1 downto 0); -- (0,0) is the upper left corner. (size-1, size-1) is the lower right corner.
