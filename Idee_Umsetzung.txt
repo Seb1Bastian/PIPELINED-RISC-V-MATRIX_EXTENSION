@@ -1,7 +1,10 @@
-Controller:
-
-Hat flags, die gestetzt werden ,wenn die Berechnung zu Ende ist. CPU kann die Flags auslesen und entsprechend lange die Pipeline stallen.
-
-Wie weiß man das die Berechung fertig ist/ werden Änderungen bemerkt?:
--Ein Bit was sich nach jeder Rechnung immer flipt.
--Ein fester Takt nach dem die Rechung fertig seien muss.
+1) Die CPU sendet als erstes die Operation an den Beschleuniger. (Wie groß sind die Matrizen und wie viele Einträge in der Matrix ist. Nur Quadratische Matrizen)
+2) Wenn der Accelerator ließt die Operation ein und bereitet sich auf das Laden der Daten vor.
+3) Die CPU sendet Daten.
+3.1) Wenn die CPU Daten sendet guckt die Hazzard Unit, ob man Daten senden darf. Wenn ja wird einfach gesendet, wenn nein wird die Pipeline gestallt bis man senden darf.
+4) Der Accelerator ließt die Daten aus dem Zwischenspeicher.
+5) Der Accelerator verabeitet die gesendeten Daten.
+6) Der Accelerator sendet die Ergebnisse zurück. (wie 3.1)
+7) Der Accelerator wartet auf eine neue Operation.
+8) Die CPU speichert sich die Daten. ( Wenn im Zwischenspeicher keine neuen Daten stehen und man lesen will, wird die gesamte Pipeline gestallt bis man wieder neue Daten im Zwischenspeicher liegen)
+9) Die CPU sendet neue Operation.
