@@ -6,8 +6,8 @@ entity reg_fd is
     port(
         --inputs
         clk         : in std_logic;
-        en          : in std_logic;
-        clr         : in std_logic;
+        en          : in std_logic;                         --not( stall )
+        clr         : in std_logic;                         --flush
         rd          : in std_logic_vector(31 downto 0);
         pc_f        : in std_logic_vector(31 downto 0);
         pcplus4_f   : in std_logic_vector(31 downto 0);
@@ -24,16 +24,19 @@ architecture rtl of reg_fd is
     signal memory : ramtype;
 
     begin
-        process(clk, clr, en)begin
-          if clr = '1' then
-            memory(0) <= (others => '0');
-            memory(1) <= (others => '0');
-            memory(2) <= (others => '0');
-          elsif rising_edge (clk) and en = '1' then
-            memory(0) <= rd;
-            memory(1) <= pc_f;
-            memory(2) <= pcplus4_f;
-          end if;
+        process(clk)begin
+          if rising_edge(clk) then
+            if clr = '1' then
+              memory(0) <= (others => '0');
+              memory(1) <= (others => '0');
+              memory(2) <= (others => '0');
+            elsif en = '1' then
+              memory(0) <= rd;
+              memory(1) <= pc_f;
+              memory(2) <= pcplus4_f;
+            end if;
+          end if ;
+          
         end process;
 
         instr_d     <=  memory(0);

@@ -14,12 +14,5 @@ end mux_2;
 
 architecture rtl of mux_2 is
   begin
-    process(sel,port_in1,port_in2)
-      begin
-        if(sel = '0')then
-          port_out <= port_in1;
-        elsif(sel = '1')then
-          port_out <= port_in2;
-        end if;
-      end process;
+     port_out <= port_in2 when sel = '1' else port_in1;
 end rtl;

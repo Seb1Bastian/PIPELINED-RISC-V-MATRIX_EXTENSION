@@ -6,6 +6,8 @@ entity reg_em is
     port(
         --inputs
         clk             : in std_logic;
+        en_em           : in std_logic;                         --not( stall )
+        clr_em          : in std_logic;                         --flush
         regwrite_e      : in std_logic;
         resultsrc_e     : in std_logic_vector(1 downto 0);
         memwrite_e      : in std_logic;
@@ -50,21 +52,29 @@ architecture rtl of reg_em is
 
     begin
         process(clk)begin
-            if rising_edge(clk)then
+            if rising_edge(clk) then
+                if clr_em = '1' then
+                    memory_32 <= (others => (others => '0'));
+                    memory_5(0) <= (others => '0');
+                    memory_2(0) <= (others => '0');
+                    memory_1 <= (others =>  '0');
+                    nn_signals <= (others =>  '0');
+                elsif en_em = '1' then
+                    memory_32(0)    <= aluresult;
+                    memory_32(1)    <= writedata_e;
+                    memory_32(2)    <= pcplus4_e;
 
-                memory_32(0)    <= aluresult;
-                memory_32(1)    <= writedata_e;
-                memory_32(2)    <= pcplus4_e;
+                    memory_5(0)     <= rd_e;
 
-                memory_5(0)     <= rd_e;
+                    memory_2(0)     <= resultsrc_e;
 
-                memory_2(0)     <= resultsrc_e;
-
-                memory_1(0)     <= regwrite_e;
-                memory_1(1)     <= memwrite_e;
-                nn_signals(0)   <= toAccelerator_e;
-                nn_signals(1)   <= onlyByte_e;
-            end if;
+                    memory_1(0)     <= regwrite_e;
+                    memory_1(1)     <= memwrite_e;
+                    nn_signals(0)   <= toAccelerator_e;
+                    nn_signals(1)   <= onlyByte_e;
+                end if;
+            end if ;
+            
         end process;
 
         aluresult_m     <= memory_32(0);

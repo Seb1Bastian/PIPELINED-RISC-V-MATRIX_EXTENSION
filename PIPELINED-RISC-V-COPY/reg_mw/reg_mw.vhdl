@@ -6,6 +6,8 @@ entity reg_mw is
     port(
         --inputs
         clk             : in std_logic;
+        en_mw           : in std_logic;                         --not( stall )
+        clr_mw          : in std_logic;                         --flush
         regwrite_m      : in std_logic;
         resultsrc_m     : in std_logic_vector(1 downto 0);
         aluresult_m     : in std_logic_vector(31 downto 0);
@@ -45,20 +47,30 @@ architecture rtl of reg_mw is
 
     begin
         process(clk)begin
-            if rising_edge(clk)then
-                
-                memory_32(0)    <= aluresult_m;
-                memory_32(1)    <= rd;
-                memory_32(2)    <= pcplus4_m;
-                
-                memory_5(0)     <= rd_m;
-
-                memory_2(0)     <= resultsrc_m;
-
-                memory_1(0)     <= regwrite_m;
-
-                nn_signals(0)   <= toAccelerator_m;
-            end if;
+            if rising_edge(clk) then
+                if clr_mw = '1' then
+                    memory_32 <= (others => (others => '0'));
+                    
+                    memory_5(0) <= (others => '0');
+                    memory_2(0) <= (others => '0');
+                    memory_1 <= (others => '0');
+    
+                    nn_signals <= (others => '0');
+                elsif en_mw = '1' then
+                    
+                    memory_32(0)    <= aluresult_m;
+                    memory_32(1)    <= rd;
+                    memory_32(2)    <= pcplus4_m;
+                    
+                    memory_5(0)     <= rd_m;
+    
+                    memory_2(0)     <= resultsrc_m;
+    
+                    memory_1(0)     <= regwrite_m;
+    
+                    nn_signals(0)   <= toAccelerator_m;
+                end if;
+            end if ;
         end process;
 
         regwrite_w      <= memory_1(0);

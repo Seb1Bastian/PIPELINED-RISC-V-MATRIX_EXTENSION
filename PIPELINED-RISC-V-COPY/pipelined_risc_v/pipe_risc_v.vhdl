@@ -4,10 +4,17 @@ use ieee.numeric_std.all;
 
 entity pipe_risc_v is
     port(
-        clk : in std_logic;
-        reset : in std_logic;
-        toAccelerator : out std_logic;
-        dataToAccelerator : out std_logic_vector(31 downto 0)
+        clk                         : in std_logic;
+        reset                       : in std_logic;
+        dataFromAccelerator         : in std_logic_vector(31 downto 0);
+        canReadDataFromAccelerator  : in std_logic;
+        canWriteDataToAccelerator   : in std_logic;
+
+        --outputs
+        writeToAccelerator          : out std_logic;
+        readFromAccelerator         : out std_logic;
+        dataToAccelerator           : out std_logic_vector(31 downto 0)
+        
     );
 end pipe_risc_v;
 
@@ -30,8 +37,14 @@ architecture rtl of pipe_risc_v is
     signal forward_be       : std_logic_vector(1 downto 0) := "00";
     signal en_pc            : std_logic := '0';
     signal en_fd            : std_logic := '0';
+    signal en_de            : std_logic := '0';
+    signal en_em            : std_logic := '0';
+    signal en_mw            : std_logic := '0';
+    signal clr_pc           : std_logic := '0';
     signal clr_fd           : std_logic := '0';
     signal clr_de           : std_logic := '0';
+    signal clr_em           : std_logic := '0';
+    signal clr_mw           : std_logic := '0';
     signal rd_e             : std_logic_vector(4 downto 0) := "00000";
     signal resultsrc_e0     : std_logic := '0';
     signal rs1_e            : std_logic_vector(4 downto 0) := "00000";
@@ -45,8 +58,9 @@ architecture rtl of pipe_risc_v is
     --NNsignals
     signal toAccelerator_d  : std_logic;
     signal fromAccelerator_d: std_logic;
+    signal fromAccelerator_e: std_logic;
     signal onlyByte_d       : std_logic;
-    --signal toAccelerator_w  : std_logic;
+    signal toAccelerator_w  : std_logic;
 
 
 
@@ -58,8 +72,14 @@ architecture rtl of pipe_risc_v is
                 forward_be          => forward_be,
                 en_pc               => en_pc,
                 en_fd               => en_fd,
+                en_de               => en_de,
+                en_em               => en_em,
+                en_mw               => en_mw,
+                clr_pc              => clr_pc,
                 clr_fd              => clr_fd,
                 clr_de              => clr_de,
+                clr_em              => clr_em,
+                clr_mw              => clr_mw,
                 clk                 => clk,
                 reset               => reset,
                 pcsrc_e             => pcsrc_e,
@@ -86,7 +106,8 @@ architecture rtl of pipe_risc_v is
                 toAccelerator_d     => toAccelerator_d,
                 fromAccelerator_d   => fromAccelerator_d,
                 onlyByte_d          => onlyByte_d,
-                toAccelerator       => toAccelerator,
+                toAccelerator       => toAccelerator_w,
+                fromAccelerator     => fromAccelerator_e,
                 dataToAccelerator   => dataToAccelerator
             );
 
@@ -125,11 +146,22 @@ architecture rtl of pipe_risc_v is
                 rd_w                => rd_w,
                 regwrite_w          => regwrite_w,
                 regwrite_m          => regwrite_m,
+                toAccelerator_w     => toAccelerator_w,
+                fromAccelerator_e   => fromAccelerator_e,
+                canReadDataFromAccelerator  => canReadDataFromAccelerator,
+                canWriteDataToAccelerator   => canWriteDataToAccelerator,
+
                 forward_ae          => forward_ae,
                 forward_be          => forward_be,
                 stall_f             => en_pc,
                 stall_d             => en_fd,
-                flush_e             => clr_fd,
-                flush_d             => clr_de
+                stall_e             => en_de,
+                stall_m             => en_em,
+                stall_w             => en_mw,
+                flush_f             => clr_pc,
+                flush_d             => clr_fd,
+                flush_e             => clr_de,
+                flush_m             => clr_em,
+                flush_w             => clr_mw
             );
     end rtl;

@@ -6,7 +6,8 @@ entity reg_de is
     port(
 
         --inputs
-        clr_de          : in std_logic;
+        en_de           : in std_logic;                         --not( stall )
+        clr_de          : in std_logic;                         --flush
         clk             : in std_logic;
         regwrite_d      : in std_logic;
         resultsrc_d     : in std_logic_vector(1 downto 0);
@@ -79,7 +80,7 @@ architecture rtl of reg_de is
                 memory_2    <= (others => (others => '0'));
                 memory_1    <= (others => '0');
                 nn_signals  <= (others => '0');
-            else 
+            elsif en_de = '1' then
               memory_32(0)    <= rd1;
               memory_32(1)    <= rd2;
               memory_32(2)    <= pc_d;

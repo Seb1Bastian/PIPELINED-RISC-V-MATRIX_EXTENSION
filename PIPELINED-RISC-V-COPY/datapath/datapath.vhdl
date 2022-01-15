@@ -9,8 +9,14 @@ entity datapath is
         reset               : in std_logic;
         en_pc               : in std_logic;
         en_fd               : in std_logic;
+        en_de               : in std_logic;
+        en_em               : in std_logic;
+        en_mw               : in std_logic;
+        clr_pc              : in std_logic;
         clr_fd              : in std_logic;
         clr_de              : in std_logic;
+        clr_em              : in std_logic;
+        clr_mw              : in std_logic;
         pcsrc_e             : in std_logic;
 
         immsrc_d            : in std_logic_vector(1 downto 0);
@@ -47,8 +53,9 @@ entity datapath is
         fromAccelerator_d   : in std_logic;
         onlyByte_d          : in std_logic;
         --outputs
-        toAccelerator     : out std_logic;
-        dataToAccelerator : out std_logic_vector(31 downto 0)
+        toAccelerator       : out std_logic;
+        fromAccelerator     : out std_logic;
+        dataToAccelerator   : out std_logic_vector(31 downto 0)
 
     );
 end datapath;
@@ -95,6 +102,9 @@ architecture rtl of datapath is
     signal not_clk              : std_logic;
     signal not_en_pc            : std_logic;
     signal not_en_fd            : std_logic;
+    signal not_en_de            : std_logic;
+    signal not_en_em            : std_logic;
+    signal not_en_mw            : std_logic;
 
     --NN
     signal toAccelerator_e      : std_logic;
@@ -118,8 +128,8 @@ architecture rtl of datapath is
             );
 
 
-        not_en_pc <= not en_pc;
         --instantiation program counter
+        not_en_pc <= not en_pc;
         inst_pc : entity work.pc(rtl)
             port map(
                 clk     => clk,
@@ -143,8 +153,8 @@ architecture rtl of datapath is
                 b_in    => x"00000004",
                 c_out   => pcplus4_f
             );
-        not_en_fd   <= not en_fd;
         --instantiation Register between fetch and decode
+        not_en_fd   <= not en_fd;
         inst_reg_fd : entity work.reg_fd(rtl)
             port map(
                 clk         => clk,
@@ -179,10 +189,12 @@ architecture rtl of datapath is
             );
 
         --instantiation Register between decode and execute
+        not_en_de <= not en_de;
         inst_reg_de : entity work.reg_de(rtl)
             port map(
                 clk             => clk,
                 clr_de          => clr_de,
+                en_de           => not_en_de,
                 regwrite_d      => regwrite_d,
                 resultsrc_d     => resultsrc_d,
                 memwrite_d      => memwrite_d,
@@ -243,7 +255,7 @@ architecture rtl of datapath is
                     a    => rd2_e,
                     b    => result_w,
                     c    => aluresult_m,
-                    sel         => forward_be,
+                    sel  => forward_be,
                     y    => forward_be_mux_o
                 );
 
@@ -278,9 +290,12 @@ architecture rtl of datapath is
 
             --instantiation Register between execute and memory
             writedata_e <= forward_be_mux_o;
+            not_en_em   <= not en_em;
             inst_reg_em : entity work.reg_em(rtl)
                 port map(
                     clk             => clk,
+                    clr_em          => clr_em,
+                    en_em           => not_en_em,
                     regwrite_e      => regwrite_e,
                     resultsrc_e     => resultsrc_e,
                     memwrite_e      => memwrite_e,
@@ -315,9 +330,12 @@ architecture rtl of datapath is
                 );
 
             --instantiation Register between memory and writeback
+            not_en_mw <= not en_mw;
             inst_reg_mw : entity work.reg_mw(rtl)
                 port map(
                     clk             => clk,
+                    clr_mw          => clr_mw,
+                    en_mw           => not_en_mw,
                     regwrite_m      => regwrite_m,
                     resultsrc_m     => resultsrc_m,
                     aluresult_m     => aluresult_m,
