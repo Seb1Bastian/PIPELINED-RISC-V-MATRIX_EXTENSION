@@ -14,6 +14,7 @@ entity hazard_unit is
         rs1_e               : in std_logic_vector(19 downto 15);
         pcsrc_e             : in std_logic;
         resultsrc_e0        : in std_logic;
+        toAccelerator_e     : in std_logic;
         rd_m                : in std_logic_vector(11 downto 7);
         regwrite_m          : in std_logic;
         rd_w                : in std_logic_vector(11 downto 7);
@@ -116,7 +117,7 @@ architecture rtl of hazard_unit is
         --Stall when a load hazard occurs
         process(rs1_d, rs2_d, rd_e, resultsrc_e0)begin
 
-            if(((rs1_d = rd_e) or (rs2_d = rd_e)) and (resultsrc_e0 = '1'))then
+            if(((rs1_d = rd_e) or (rs2_d = rd_e)) and (resultsrc_e0 = '1') and (toAccelerator_e = '0'))then
                 lwStall <= '1';
             else
                 lwStall <= '0';
@@ -161,6 +162,8 @@ architecture rtl of hazard_unit is
         stall_e_nn <= waitToRead or waitToWrite;
         stall_m_nn <= waitToWrite;
         stall_w_nn <= waitToWrite;
+
+        flush_m_nn <= waitToRead;
                 
 
       --  stall_f <= lwStall;

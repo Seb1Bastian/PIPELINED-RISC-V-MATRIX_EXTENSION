@@ -60,6 +60,7 @@ architecture rtl of pipe_risc_v is
     signal fromAccelerator_d: std_logic;
     signal fromAccelerator_e: std_logic;
     signal onlyByte_d       : std_logic;
+    signal toAccelerator_e  : std_logic;
     signal toAccelerator_w  : std_logic;
 
 
@@ -106,7 +107,8 @@ architecture rtl of pipe_risc_v is
                 toAccelerator_d     => toAccelerator_d,
                 fromAccelerator_d   => fromAccelerator_d,
                 onlyByte_d          => onlyByte_d,
-                toAccelerator       => toAccelerator_w,
+                toAccelerator_e     => toAccelerator_e,
+                toAccelerator_w     => toAccelerator_w,
                 fromAccelerator     => fromAccelerator_e,
                 dataToAccelerator   => dataToAccelerator
             );
@@ -142,6 +144,7 @@ architecture rtl of pipe_risc_v is
                 resultsrc_e0        => resultsrc_e0,
                 rs1_e               => rs1_e,
                 rs2_e               => rs2_e,
+                toAccelerator_e     => toAccelerator_e,
                 rd_m                => rd_m,
                 rd_w                => rd_w,
                 regwrite_w          => regwrite_w,
