@@ -25,50 +25,51 @@ architecture rtl of fifo_mem is
 
     signal vector : FOUR_BYTE_VECTOR(size-1 downto 0);
     signal written   : std_logic_vector(size-1 downto 0) := (others => '0');
-    --signal adr_write : integer range 0 to size :=0;
-    --signal adr_read  : integer range 0 to size :=0;
+    signal not_can_write : std_logic;
+    signal adr_write : integer range 0 to size :=0;
+    signal adr_read  : integer range 0 to size :=0;
     
     begin
 
-        can_writing : entity work.unary_nand(rtl) port map( inp => written, outp => can_write);
-        can_reading : entity work.unary_or(rtl) port map( inp => written, outp => can_read);
+        can_writing : entity work.unary_and(rtl) generic map(size) port map( inp => written, outp => not_can_write);
+        can_reading : entity work.unary_or(rtl)  generic map(size) port map( inp => written, outp =>     can_read );
+        can_write <= not not_can_write;
 
 
-        process(clk_1)  
+        process(clk_1,clk_2)  
         variable v_adr_write : integer range 0 to size := 0;
+        variable v_adr_read : integer range 0 to size := 0;
         begin
             if(rising_edge(clk_1)) then
-                if(write_data = '1' and v_adr_write < size and written(v_adr_write) = '0') then        --Do you have enough time to read out the cell by looking ahead only one cell ahead (worst case) (maybe looking two cell ahead might be a good idea?)
+                if(write_data = '1' and v_adr_write < size-1 and written(v_adr_write) = '0') then        --Do you have enough time to read out the cell by looking ahead only one cell ahead (worst case) (maybe looking two cell ahead might be a good idea?)
                     vector(v_adr_write) <= data_in;
                     --adr_write <= adr_write + 1;
-                    written(v_adr_write) <= '1';
+                    written(v_adr_write) <= not written(v_adr_write);
                     v_adr_write := v_adr_write + 1;
-                elsif write_data = '1' and v_adr_write = (size) and written(0) = '0' then
-                    vector(0) <= data_in;
+                elsif write_data = '1' and v_adr_write = size-1 and written(v_adr_write) = '0' then
+                    vector(v_adr_write) <= data_in;
                     --adr_write <= 0;
-                    written(0) <= '1';
+                    written(v_adr_write) <= not written(v_adr_write);
                     v_adr_write := 0;
                 end if;
             end if;
-        end process;
 
-
-        process(clk_2)
-        variable v_adr_read : integer range 0 to size := 0;
-        begin
             if(rising_edge(clk_2)) then
-                if(read_data = '1' and v_adr_read < size and written(v_adr_read) = '1') then
+                if(read_data = '1' and v_adr_read < size-1 and written(v_adr_read) = '1') then
                     data_out <= vector(v_adr_read);
+                    written(v_adr_read) <= not written(v_adr_read);
                     v_adr_read := v_adr_read + 1;
-                    written(v_adr_read) <= '0';
                     --adr_read <= adr_read + 1;
-                elsif read_data = '1' and v_adr_read = (size) and  written(0) = '1' then
-                    data_out <= vector(0);
+                elsif read_data = '1' and v_adr_read = size-1 and  written(v_adr_read) = '1' then
+                    data_out <= vector(v_adr_read);
+                    written(v_adr_read) <= not written(v_adr_read);
                     v_adr_read := 0;
-                    written(0) <= '1';
                     --adr_read <= 0;
                 end if;
             end if;
+
+            adr_read <= v_adr_read;
+            adr_write <= v_adr_write;
         end process;
 
 

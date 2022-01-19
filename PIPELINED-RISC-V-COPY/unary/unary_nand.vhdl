@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity unary_nand IS
-    generic (N: positive := 8); --array size
+    generic (N : integer range 1 to 255 := 15); --array size
     port (
         inp: in std_logic_vector(N-1 downto 0);
         outp: out std_logic

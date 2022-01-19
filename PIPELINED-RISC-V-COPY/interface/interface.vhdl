@@ -44,7 +44,7 @@ begin
        write_data  => write_data_1,
        read_data   => read_data_2,
        --outputs
-       data_out    => data_out1,
+       data_out    => data_out2,
        can_write   => can_write1,
        can_read    => can_read2
    );
@@ -59,7 +59,7 @@ begin
        write_data  => write_data_2,
        read_data   => read_data_1,
        --outputs
-       data_out    => data_out2,
+       data_out    => data_out1,
        can_write   => can_write2,
        can_read    => can_read1
    );
