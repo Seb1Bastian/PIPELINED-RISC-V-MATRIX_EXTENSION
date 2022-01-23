@@ -52,6 +52,7 @@ entity datapath is
         toAccelerator_d     : in std_logic;
         fromAccelerator_d   : in std_logic;
         onlyByte_d          : in std_logic;
+        datafromAccelerator : in std_logic_vector(31 downto 0);
         --outputs
         toAccelerator_e     : out std_logic;
         toAccelerator_w     : out std_logic;
@@ -113,6 +114,7 @@ architecture rtl of datapath is
     signal toAccelerator_w_intern   : std_logic;
     signal fromAccelerator_e        : std_logic;
     signal aluresultbyte_w          : std_logic_vector(31 downto 0);
+    signal writeDataE_or_fromAcc    : std_logic_vector(31 downto 0);
     signal onlyByte_e               : std_logic;
     signal onlyByte_m               : std_logic;
     signal dataToAccelerator_w      : std_logic_vector(31 downto 0);
@@ -245,7 +247,7 @@ architecture rtl of datapath is
                     a    => rd1_e,
                     b    => result_w,
                     c    => aluresult_m,
-                    sel         => forward_ae,
+                    sel  => forward_ae,
                     y    => forward_ae_mux_o
                 );
 
@@ -270,6 +272,16 @@ architecture rtl of datapath is
                     port_out    => srcb_e
                 );
 
+            
+            inst_mux_2_reg_or_acc : entity work.mux_2(rtl)
+                generic map(32)
+                port map(
+                    port_in1 => forward_be_mux_o,
+                    port_in2 => datafromAccelerator ,
+                    sel      => fromAccelerator_e,
+                    port_out => writeDataE_or_fromAcc
+                );
+
             --instantiation adder
             inst_adder : entity work.adder(rtl)
                 port map(
@@ -290,7 +302,7 @@ architecture rtl of datapath is
                 );
 
             --instantiation Register between execute and memory
-            writedata_e <= forward_be_mux_o;
+            --writedata_e <= forward_be_mux_o;
             not_en_em   <= not en_em;
             inst_reg_em : entity work.reg_em(rtl)
                 port map(
@@ -301,7 +313,7 @@ architecture rtl of datapath is
                     resultsrc_e     => resultsrc_e,
                     memwrite_e      => memwrite_e,
                     aluresult       => aluresult_d,
-                    writedata_e     => writedata_e,
+                    writedata_e     => writeDataE_or_fromAcc,
                     rd_e            => rd_e,
                     pcplus4_e       => pcplus4_e,
                     toAccelerator_e => toAccelerator_e_intern,
@@ -381,6 +393,7 @@ architecture rtl of datapath is
 
             toAccelerator_e     <= toAccelerator_e_intern;
             toAccelerator_w     <= toAccelerator_w_intern;
+            fromAccelerator     <= fromAccelerator_e;
             dataToAccelerator   <= dataToAccelerator_w;
 
     end rtl;
