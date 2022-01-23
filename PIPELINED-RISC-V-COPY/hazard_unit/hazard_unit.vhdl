@@ -150,7 +150,7 @@ architecture rtl of hazard_unit is
 
         process(canReadDataFromAccelerator, fromAccelerator_e)
         begin
-            if(canWriteDataToAccelerator = '0' and fromAccelerator_e = '1') then
+            if(canReadDataFromAccelerator = '0' and fromAccelerator_e = '1') then
                 waitToRead <= '1';
             else
                 waitToRead <= '0';
@@ -163,7 +163,7 @@ architecture rtl of hazard_unit is
         stall_m_nn <= waitToWrite;
         stall_w_nn <= waitToWrite;
 
-        flush_m_nn <= waitToRead;
+        flush_m_nn <= waitToRead and (not waitToWrite); --?
                 
 
       --  stall_f <= lwStall;

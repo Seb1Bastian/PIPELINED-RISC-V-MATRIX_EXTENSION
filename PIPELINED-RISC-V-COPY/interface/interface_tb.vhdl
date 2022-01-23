@@ -11,7 +11,7 @@ architecture rtl of interface_tb is
 
     signal clk_1        :  std_logic;
     signal clk_2        :  std_logic;
-    --reset        : in std_logic;
+    signal reset        :  std_logic;
     signal data_in1     :  std_logic_vector(31 downto 0);
     signal data_in2     :  std_logic_vector(31 downto 0);
     signal write_data_1 :  std_logic;
@@ -29,13 +29,15 @@ architecture rtl of interface_tb is
 
 begin
     inst_interface : entity work.interface(rtl)
-    generic map(3)
-    port map(clk_1 => clk_1, clk_2=> clk_2, data_in1=> data_in1, data_in2 => data_in2, write_data_1=> write_data_1, write_data_2=> write_data_2,
+    generic map(4)
+    port map(clk_1 => clk_1, clk_2=> clk_2, reset => reset, data_in1=> data_in1, data_in2 => data_in2, write_data_1=> write_data_1, write_data_2=> write_data_2,
              read_data_1 => read_data_1, read_data_2=> read_data_2, data_out1=> data_out1, data_out2=> data_out2,
              can_write1=> can_write1, can_write2=> can_write2, can_read1 => can_read1, can_read2 => can_read2 );
 
 
     process begin
+        wait for 5 ns;
+        wait for 5 ns;
         for i in 1 to 26 loop
             clk_1 <= '0';
         wait for 10 ns;
@@ -46,6 +48,8 @@ begin
     end process;
     
     process begin
+        wait for 5 ns;
+        wait for 5 ns;
         for i in 1 to 26 loop
             clk_2 <= '0';
         wait for 9 ns;
@@ -56,6 +60,10 @@ begin
     end process;
 
     process begin
+        reset <= '1';
+        wait for 5 ns;
+        reset <= '0';
+        wait for 5 ns;
         data_in1 <= x"12345678";
         data_in2 <= x"10101010";
         read_data_1 <= '0';

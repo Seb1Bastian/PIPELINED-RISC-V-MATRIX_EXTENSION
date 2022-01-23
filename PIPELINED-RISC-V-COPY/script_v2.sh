@@ -146,3 +146,45 @@ ghdl -e pipe_risc_v
 ghdl -s pipelined_risc_v/pipe_risc_v_tb.vhdl
 ghdl -a pipelined_risc_v/pipe_risc_v_tb.vhdl
 ghdl -e pipe_risc_v_tb
+
+ghdl -s unary/unary_and.vhdl
+ghdl -a unary/unary_and.vhdl
+ghdl -e unary_and
+ghdl -s unary/unary_or.vhdl
+ghdl -a unary/unary_or.vhdl
+ghdl -e unary_or
+
+ghdl -s fifo_grid/fifo_pack.vhdl
+ghdl -a fifo_grid/fifo_pack.vhdl
+
+ghdl -s fifo_mem/fifo_mux.vhdl
+ghdl -a fifo_mem/fifo_mux.vhdl
+ghdl -e fifo_mux
+
+ghdl -s fifo_mem/fifo_demux.vhdl
+ghdl -a fifo_mem/fifo_demux.vhdl
+ghdl -e fifo_demux
+
+ghdl -s fifo_mem/vec_combiner.vhdl
+ghdl -a fifo_mem/vec_combiner.vhdl
+ghdl -e vec_combiner
+
+ghdl -s pipo/pipo.vhdl
+ghdl -a pipo/pipo.vhdl
+ghdl -e pipo
+
+ghdl -s fifo_mem/fifo_mem_v2.vhdl
+ghdl -a fifo_mem/fifo_mem_v2.vhdl
+ghdl -e fifo_mem_v2
+
+ghdl -s interface/interface.vhdl
+ghdl -a interface/interface.vhdl
+ghdl -e interface
+ghdl -s interface/interface_tb.vhdl
+ghdl -a interface/interface_tb.vhdl
+ghdl -e interface_tb
+
+ghdl -s pipelined_risc_v/risc_v_interface_tb.vhdl
+ghdl -a pipelined_risc_v/risc_v_interface_tb.vhdl
+ghdl -e pipe_risc_v_interface_tb
+

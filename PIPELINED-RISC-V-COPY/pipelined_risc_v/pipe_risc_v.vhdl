@@ -110,7 +110,8 @@ architecture rtl of pipe_risc_v is
                 toAccelerator_e     => toAccelerator_e,
                 toAccelerator_w     => toAccelerator_w,
                 fromAccelerator     => fromAccelerator_e,
-                dataToAccelerator   => dataToAccelerator
+                dataToAccelerator   => dataToAccelerator,
+                datafromAccelerator => dataFromAccelerator
             );
 
         pcsrc_e <= (branch_e and zero) or jump_e ;
@@ -167,4 +168,7 @@ architecture rtl of pipe_risc_v is
                 flush_m             => clr_em,
                 flush_w             => clr_mw
             );
+
+            writeToAccelerator  <= toAccelerator_w;
+            readFromAccelerator <= fromAccelerator_e;
     end rtl;
