@@ -37,13 +37,15 @@ architecture rtl of main_decoder is
                 when "0010011" => controls <= "10010000100"; --I-type ALU
                 when "1101111" => controls <= "111-0100--1"; --jal
 
-                --NN                                        --auf Hazzards achten!!! da guckt ein nur auf das letzte auswahlsignal.
-                when "1110000" => controls <= "00010010000"; NNcontrols <= "10";                        --toAccelerator
-                when "1110100" => controls <= "00010110000"; NNcontrols <= "10";                        --toAcceleratorB
-                when "1110001" => controls <= "00111--0000"; NNcontrols <= "01";                        --fromAccelerator
-                when "1110101" => controls <= "00111--0000"; NNcontrols <= "01"; bytecontrol <= '1';    --fromAcceleratorB
-                when "1110010" => controls <= "10010110000";                                            --loadByte (bytecontrol does not need to be 1 because Resultsrc is so choosen that the byteInput is choosen)
-                when "1110011" => controls <= "00111--0000"; bytecontrol <= '1';                        --storeByte
+                when "0011011" => controls <= "10010000100"; --slli --the shift can be longer than 32 bits 
+
+                --NN
+                when "1100000" => controls <= "00010010000"; NNcontrols <= "10";                        --1100000 toAccelerator     
+                when "1100100" => controls <= "00010110000"; NNcontrols <= "10"; bytecontrol <= '1';    --1100100 toAcceleratorB
+                when "1101000" => controls <= "00111--0000"; NNcontrols <= "01";                        --1101000 fromAccelerator
+                when "1101100" => controls <= "00111--0000"; NNcontrols <= "01"; bytecontrol <= '1';    --1101100 fromAcceleratorB
+                when "1110000" => controls <= "10010110000"; bytecontrol <= '1';                        --1110000 loadByte (bytecontrol does not need to be 1 because Resultsrc is so choosen that the byteInput is choosen)
+                when "1110100" => controls <= "00111--0000"; bytecontrol <= '1';                        --1110100 storeByte
                 when others    => controls <= "-----------"; --undefined for other cases
             end case;
         end process;

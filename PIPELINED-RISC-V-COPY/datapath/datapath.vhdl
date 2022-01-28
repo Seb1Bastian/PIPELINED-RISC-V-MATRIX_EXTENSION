@@ -113,7 +113,7 @@ architecture rtl of datapath is
     signal toAccelerator_m          : std_logic;
     signal toAccelerator_w_intern   : std_logic;
     signal fromAccelerator_e        : std_logic;
-    signal aluresultbyte_w          : std_logic_vector(31 downto 0);
+    signal readdatabyte_w           : std_logic_vector(31 downto 0);
     signal writeDataE_or_fromAcc    : std_logic_vector(31 downto 0);
     signal onlyByte_e               : std_logic;
     signal onlyByte_m               : std_logic;
@@ -367,7 +367,7 @@ architecture rtl of datapath is
                 );
 
 
-            aluresultbyte_w <= x"000000" & aluresult_w(7 downto 0);
+            readdatabyte_w <= x"000000" & readdata_w(7 downto 0);
             --instantiation multiplexer 3 to 1
             inst_mux_4 : entity work.mux_4(rtl)
                 generic map(32)
@@ -375,7 +375,7 @@ architecture rtl of datapath is
                     a    => aluresult_w,
                     b    => readdata_w,
                     c    => pcplus4_w,
-                    d    => aluresultbyte_w,
+                    d    => readdatabyte_w,
                     sel  => resultsrc_w,
                     y    => result_w
                 );

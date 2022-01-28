@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
 entity nn_controller is
-    generic(max_entries : integer range 2 to 255 := 3); -- the max number of entries in the matrix.
+    generic( max_size : integer);
     port(
         --inputs
         clk             : in std_logic;
@@ -19,8 +19,10 @@ entity nn_controller is
         start_load   : out std_logic;
         start_mult   : out std_logic;
         start_unload : out std_logic;
-        entries      : out integer range 0 to 255;
-        size         : out integer range 0 to 15
+        rows1        : out integer range 0 to max_size;
+        columns1     : out integer range 0 to max_size;
+        rows2        : out integer range 0 to max_size;
+        columns2     : out integer range 0 to max_size
     );
 end nn_controller;
     
@@ -29,10 +31,14 @@ architecture rtl of nn_controller is
     type state is (waiting,loading,multiplying,unloading);
 
     signal controls : std_logic_vector( 0 downto 0);
-    signal information : std_logic_vector(23 downto 0);
-    signal op       : std_logic_vector(3 downto 0);
+    signal information : std_logic_vector(23 downto 0) := "00001" & "00001" & "00001" & "00001" & x"0";
+    signal op       : std_logic;
     signal current_state : state := waiting;
     signal next_state    : state := waiting;
+    signal rows1_i       : integer := 1;
+    signal columns1_i    : integer := 1;
+    signal rows2_i       : integer := 1;
+    signal columns2_i    : integer := 1;
 
 
     function to_integer (constant i : in std_logic_vector) return INTEGER is
@@ -52,18 +58,18 @@ architecture rtl of nn_controller is
 
 begin
 
-    entries <= to_integer(information(23 downto 16));
-    size    <= to_integer(information( 15 downto 12));
-    op      <= information(11 downto 8);
+    rows1    <= rows1_i;
+    columns1 <= columns1_i;
+    rows2    <= rows2_i;  --columns1 and rows1 should be equal
+    columns2 <= columns2_i;
 
-    process(op)begin
-        case op is
-            when "0001" => controls <= "1"; --Matrixmultiplication
-            when others => controls <= "-"; --undefined for other cases
-        end case;
-    end process;
+    rows1_i    <= to_integer(information(23 downto 19));
+    columns1_i <= to_integer(information(18 downto 14));
+    rows2_i    <= to_integer(information(13 downto 9));  --columns1 and rows1 should be equal
+    columns2_i <= to_integer(information(8 downto 4));
+    op         <= information(0);
 
-    process(current_state, canRead, nn_opcode)begin
+    process(current_state, canRead, nn_opcode, load_finished, mult_finished, unload_finished)begin
         if current_state = waiting and canRead = '1' then
             information <= nn_opcode;
             next_state <= loading;
@@ -82,9 +88,9 @@ begin
         end if;
     end process;
 
-    start_load   <= '1' when controls(0) = '1' and current_state = loading     else '0';
-    start_mult   <= '1' when controls(0) = '1' and current_state = multiplying else '0';
-    start_unload <= '1' when controls(0) = '1' and current_state = unloading   else '0';
+    start_load   <= '1' when current_state = loading     else '0'; --op = '1' and
+    start_mult   <= '1' when current_state = multiplying else '0'; --op = '1' and
+    start_unload <= '1' when current_state = unloading   else '0'; --op = '1' and
     read_data    <= '1' when current_state = waiting else '0';
 
 end rtl;

@@ -4,12 +4,12 @@ use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
 entity nn_unloader is
-    generic(max_size : integer range 2 to 255 := 3); -- the max number of rows and colums in the matrix.
+    generic(max_size : integer); -- the max number of rows and colums in the matrix.
     port(
         --inputs
         clk             : in std_logic;
-        size            : in integer;
-        entries         : in integer;
+        rows            : in integer range 0 to max_size;
+        columns         : in integer range 0 to max_size;
         canWrite        : in std_logic;
         start_unload    : in std_logic;
         matrix          : in BYTE_GRID(max_size-1 downto 0, max_size-1 downto 0);
@@ -23,17 +23,16 @@ end nn_unloader;
     
     
 architecture rtl of nn_unloader is
-    type state is (waiting,init,unloading,finished);
-    signal information : std_logic_vector(23 downto 0);
+    type state is (waiting,init,unloading,finished,finished2);
     signal current_state : state := waiting;
     signal next_state    : state := waiting;
-    signal matrix_entries : integer range 0 to 255 := 0;
     signal write_en      : std_logic;
+    signal pos_x1, pos_x2 : integer  range 0 to max_size-1 := 0;
 begin
 
 
 
-    process(clk,start_unload,reset)
+    process(current_state,reset,start_unload,reset, pos_x1, pos_x2)
     begin
         if reset = '1' then
             next_state <= waiting;
@@ -41,51 +40,49 @@ begin
             next_state <= init;
         elsif current_state = init then
             next_state <= unloading;
-        elsif current_state = unloading and matrix_entries = entries then
+        elsif current_state = unloading and pos_x1 = rows-1 and pos_x2 = columns-1 then
             next_state <= finished;
         elsif current_state = finished then
+            next_state <= finished2;
+        elsif current_state = finished2 then
             next_state <= waiting;
         end if;
     end process;
 
-    process(clk)
-        begin
-            if rising_edge(clk) and reset = '1' then
-                matrix_entries <= 0;
-            elsif rising_edge(clk) and write_en = '1' then                          
-                if matrix_entries = entries then
-                    matrix_entries <= 0;
-                else
-                    matrix_entries <= matrix_entries + 1;
-                end if;
-            end if;
-        end process;
-    
-    process(clk)
-    variable pos_x1, pos_x2 : integer range 0 to 255 := 0;
+    process(clk,reset)
     begin
-        if(rising_edge(clk)) then
+        if rising_edge(clk) then
             if reset = '1' then
-                pos_x1 := 0;
-                pos_x2 := 0;
-                data_out <= x"00000000";
-            elsif current_state = unloading and canWrite = '1' then
-                data_out <= x"000000" & matrix(pos_x1,pos_x2);
-                if pos_x2 = size-1 then
-                    pos_x2 := 0;
-                    if pos_x1 = size-1 then
-                        pos_x1 := 0;
-                    else
-                        pos_x1 := pos_x1 + 1;
-                    end if;
-                else
-                    pos_x2 := pos_x2 + 1;
-                end if;   
+                current_state <= waiting;
+            else
+                current_state <= next_state;
             end if;
         end if;
     end process;
 
+    process(clk) begin
+        if(rising_edge(clk)) then
+            if reset = '1' then
+                pos_x1 <= 0;
+                pos_x2 <= 0;
+            elsif write_en = '1' then                          
+                if pos_x2 = columns-1 then
+                    pos_x2 <= 0;
+                    if pos_x1 = rows-1 then
+                        pos_x1 <= 0;
+                    else
+                        pos_x1 <= pos_x1 + 1;
+                    end if;
+                else
+                    pos_x2 <= pos_x2 + 1;
+                end if;
+            end if;
+        end if;
+    end process;
+    
+    data_out <= x"000000" & matrix(pos_x1,pos_x2);
+
     write_en         <= '1' when current_state = unloading and canWrite = '1' else '0';
-    unload_finished  <= '1' when current_state = finished  else '0';
+    unload_finished  <= '1' when current_state = finished or current_state = finished2  else '0';
     write_to_CPU     <= '1' when current_state = unloading else '0';
 end rtl;

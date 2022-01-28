@@ -173,9 +173,9 @@ ghdl -s pipo/pipo.vhdl
 ghdl -a pipo/pipo.vhdl
 ghdl -e pipo
 
-ghdl -s fifo_mem/fifo_mem_v2.vhdl
-ghdl -a fifo_mem/fifo_mem_v2.vhdl
-ghdl -e fifo_mem_v2
+ghdl -s fifo_mem/fifo_mem.vhdl
+ghdl -a fifo_mem/fifo_mem.vhdl
+ghdl -e fifo_mem
 
 ghdl -s interface/interface.vhdl
 ghdl -a interface/interface.vhdl
@@ -188,3 +188,38 @@ ghdl -s pipelined_risc_v/risc_v_interface_tb.vhdl
 ghdl -a pipelined_risc_v/risc_v_interface_tb.vhdl
 ghdl -e pipe_risc_v_interface_tb
 
+ghdl -s fifo_grid/fifo_grid.vhdl
+ghdl -a fifo_grid/fifo_grid.vhdl
+ghdl -e interface
+
+ghdl -s fifo_grid/fifo_grid_vertical.vhdl
+ghdl -a fifo_grid/fifo_grid_vertical.vhdl
+ghdl -e fifo_grid_vertical
+
+ghdl -s nn_controller/nn_controller.vhdl
+ghdl -a nn_controller/nn_controller.vhdl
+ghdl -e nn_controller
+
+ghdl -s nn_unloader/nn_unloader.vhdl
+ghdl -a nn_unloader/nn_unloader.vhdl
+ghdl -e nn_unloader
+
+ghdl -s nn/sa.vhdl
+ghdl -a nn/sa.vhdl
+ghdl -e sa
+
+ghdl -s fifo_mem_loader/fifo_mem_loader.vhdl
+ghdl -a fifo_mem_loader/fifo_mem_loader.vhdl
+ghdl -e fifo_mem_loader
+
+ghdl -s nn/nn.vhdl
+ghdl -a nn/nn.vhdl
+ghdl -e nn
+
+ghdl -s pipelined_risc_v/pipe_risc_v_nn.vhdl
+ghdl -a pipelined_risc_v/pipe_risc_v_nn.vhdl
+ghdl -e pipe_risc_v
+
+ghdl -s pipelined_risc_v/pipe_risc_v_nn_tb.vhdl
+ghdl -a pipelined_risc_v/pipe_risc_v_nn_tb.vhdl
+ghdl -e pipe_risc_v_nn_tb

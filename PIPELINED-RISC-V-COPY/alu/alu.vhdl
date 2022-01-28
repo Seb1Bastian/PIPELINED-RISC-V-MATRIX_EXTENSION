@@ -36,6 +36,8 @@ architecture rtl of ALU is
                     else 
                     alu_res <= x"00000000";
                     end if;
+                when "110" =>
+                    alu_res <= std_logic_vector(shift_left(unsigned(SrcA), to_integer(unsigned(SrcB))));
                 when others => alu_res <= (others => 'U');
                 end case;
             end process;
