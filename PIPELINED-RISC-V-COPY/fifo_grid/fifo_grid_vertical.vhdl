@@ -4,64 +4,41 @@ use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
 entity fifo_grid_vertical is
-    generic(max_size : integer range 2 to 255 := 3); -- the max
+    generic(max_size : integer); -- the max
     port(
         --inputs
         clk         : in std_logic;
-        initialize  : in std_logic;
         reset       : in std_logic;  -- synchron Reset
-        write_en    : in std_logic;
-        size        : in integer;
         shift       : in std_logic;
+        write_en    : in std_logic;
+        pos_x1      : in integer range 0 to max_size-1;
+        pos_x2      : in integer range 0 to max_size-1;
 
         data_in        : in std_logic_vector(7 downto 0);
 
         --outputs
-        data_out    : out BYTE_VECTOR(max_size-1 downto 0)  -- is 1 when it is finished counting else 0
+        data_out    : out BYTE_GRID(max_size-1 downto 0, max_size-1 downto 0)
     );
 end fifo_grid_vertical;
 
 
 architecture rtl of fifo_grid_vertical is
 
-    signal vector : BYTE_VECTOR(max_size-1 downto 0);
     Signal grid : BYTE_GRID( max_size-1 downto 0, max_size-1 downto 0); -- (0,0) is the upper left corner. (size-1, size-1) is the lower right corner.
-    signal differenz : integer;
     
     begin
-        differenz <= max_size - size;
-
         process(clk)
-        variable pos_x1, pos_x2 : integer range 0 to 255 := 0;
         begin
             if(rising_edge(clk)) then
                 if(reset = '1') then
-                    for i in 0 to max_size-1 loop                   --everthing to zero
+                    for i in 0 to max_size-1 loop
                         for j in 0 to max_size-1 loop
                             grid(i,j) <= x"00";
-                        end loop ;     
+                        end loop ;
                     end loop ;
-                    pos_x1 := differenz;
-                    pos_x2 := 0;
-                elsif initialize = '1' then
-                    pos_x1 := differenz;
-                    pos_x2 := 0;                    
-                elsif write_en = '1' then                       --writes the input to the next free position
+                elsif write_en = '1' then
                     grid(pos_x1,pos_x2) <= data_in;
-                    if pos_x2 = max_size-(1+differenz) then
-                        pos_x2 := 0;
-                        if pos_x1 = max_size-1 then
-                            pos_x1 := differenz;
-                        else
-                            pos_x1 := pos_x1 + 1;
-                        end if;
-                    else
-                        pos_x2 := pos_x2 + 1;
-                    end if;                    
-                else
-                    for i in max_size-1 downto 0 loop               --shift
-                        vector(i)<= grid(size-1,i);
-                    end loop ;
+                elsif shift = '1' then
                     for i in max_size-1 downto 1 loop
                         for j in max_size-1 downto 0 loop
                             grid(i,j) <= grid(i-1,j);
@@ -73,4 +50,6 @@ architecture rtl of fifo_grid_vertical is
                 end if;
             end if;
         end process;
+
+        data_out <= grid;
 end rtl;
