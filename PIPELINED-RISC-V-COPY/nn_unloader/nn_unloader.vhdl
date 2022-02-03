@@ -84,5 +84,5 @@ begin
 
     write_en         <= '1' when current_state = unloading and canWrite = '1' else '0';
     unload_finished  <= '1' when current_state = finished or current_state = finished2  else '0';
-    write_to_CPU     <= '1' when current_state = unloading else '0';
+    write_to_CPU     <= '1' when current_state = unloading and canWrite = '1' else '0';
 end rtl;

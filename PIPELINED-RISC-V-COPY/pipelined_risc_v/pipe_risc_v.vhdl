@@ -169,6 +169,6 @@ architecture rtl of pipe_risc_v is
                 flush_w             => clr_mw
             );
 
-            writeToAccelerator  <= toAccelerator_w;
-            readFromAccelerator <= fromAccelerator_e;
+            writeToAccelerator  <= toAccelerator_w and canWriteDataToAccelerator;
+            readFromAccelerator <= fromAccelerator_e and canReadDataFromAccelerator;
     end rtl;

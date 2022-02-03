@@ -91,6 +91,6 @@ begin
     start_load   <= '1' when current_state = loading     else '0'; --op = '1' and
     start_mult   <= '1' when current_state = multiplying else '0'; --op = '1' and
     start_unload <= '1' when current_state = unloading   else '0'; --op = '1' and
-    read_data    <= '1' when current_state = waiting else '0';
+    read_data    <= '1' when current_state = waiting and canRead = '1' else '0';
 
 end rtl;

@@ -125,7 +125,7 @@ architecture rtl of fifo_mem_loader is
 
         write_en1 <= '1' when can_read = '1' and current_state = matrix_1 else '0';
         write_en2 <= '1' when can_read = '1' and current_state = matrix_2 else '0';
-        read_data <= '1' when current_state = matrix_1 or current_state = matrix_2 else '0';
+        read_data <= '1' when (current_state = matrix_1 or current_state = matrix_2)  and can_read = '1' else '0';
         finished_load <= '1' when current_state = finished else '0';
         init_grid <= '1' when current_state = init else '0';
         pos_x11 <= pos_x11_i;
