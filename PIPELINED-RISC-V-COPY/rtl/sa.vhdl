@@ -28,11 +28,12 @@ begin
 			if start = '1' then
 				for i in 0 to max_size-1 loop
 					for j in 0 to max_size-1 loop
-						if i<j then
-							d(i,j) <= a(i,j);
-						else
-							d(i,j) <= b(i,j);
-						end if;
+						d(i,j) <= std_logic_vector(unsigned(a(i,j)) + unsigned(b(i,j)));
+--						if i<j then
+--							d(i,j) <= a(i,j);
+--						else
+--							d(i,j) <= b(i,j);
+--						end if;
 					end loop ;     
 				end loop ;
 				finished <= '1';

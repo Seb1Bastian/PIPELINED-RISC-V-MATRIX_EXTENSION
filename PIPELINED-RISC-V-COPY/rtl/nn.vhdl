@@ -27,7 +27,7 @@ architecture rtl of nn is
     signal start_load       : std_logic;
     signal start_mult       : std_logic;
     signal start_unload     : std_logic;
-    signal reset_load       : std_logic;
+    signal reset_load       : std_logic := '0';
     signal next_input       : std_logic;
     signal read_data_mc     : std_logic;
     signal read_data_lo     : std_logic;
@@ -37,17 +37,17 @@ architecture rtl of nn is
     signal init_grid        : std_logic;
     signal write_en1        : std_logic;
     signal write_en2        : std_logic;
-    signal shift_grid1      : std_logic;
-    signal rows1            : integer;
-    signal columns1         : integer;
-    signal rows2            : integer;
-    signal columns2         : integer;
-    signal pos_x11          : integer;
-    signal pos_x12          : integer;
-    signal pos_x21          : integer;
-    signal pos_x22          : integer;
+    signal shift_grid1      : std_logic := '0';
+    signal rows1            : integer range 0 to max_size;
+    signal columns1         : integer range 0 to max_size;
+    signal rows2            : integer range 0 to max_size;
+    signal columns2         : integer range 0 to max_size;
+    signal pos_x11          : integer range 0 to max_size-1;
+    signal pos_x12          : integer range 0 to max_size-1;
+    signal pos_x21          : integer range 0 to max_size-1;
+    signal pos_x22          : integer range 0 to max_size-1;
     signal data_out_grid1   : BYTE_GRID(max_size-1 downto 0, max_size-1 downto 0);
-    signal shift_grid2      : std_logic;
+    signal shift_grid2      : std_logic := '0';
     signal data_out_grid2   : BYTE_GRID(max_size-1 downto 0, max_size-1 downto 0);
     signal write_en_tri1    : std_logic;
     signal write_en_tri2    : std_logic;
@@ -63,8 +63,9 @@ begin
     port map(
         --inputs
         clk             => clk,
+        reset           => reset,
         canRead         => can_read,
-        nn_opcode       => data_in(31 downto 8),
+        nn_opcode       => data_in(31 downto 0),
         load_finished   => finished_load,
         mult_finished   => finished_mult,
         unload_finished => finished_unload,

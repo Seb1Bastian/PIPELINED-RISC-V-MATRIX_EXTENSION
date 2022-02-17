@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
 entity pipo is
-    generic(size : integer range 1 to 255 := 3); -- the max
+    generic(size : integer range 1 to 255 := 3; start_value : std_logic_vector(31 downto 0) := x"00000000"); -- the max
     port(
         --inputs
         clk         : in std_logic;
@@ -20,8 +20,8 @@ end pipo;
 
 architecture rtl of pipo is
 
-    signal vector : FOUR_BYTE_VECTOR (size-1 downto 0) := (others => (others => '0'));
-    signal differenz : integer;
+    signal vector : FOUR_BYTE_VECTOR (size-1 downto 0) := (others => start_value);
+    signal test : std_logic_vector(31 downto 0);
     
     begin
         process(clk)
@@ -29,7 +29,7 @@ architecture rtl of pipo is
             if rising_edge(clk) then
                 if reset = '1' then
                     for i in 0 to size-1 loop
-                        vector(i) <= x"00000000";
+                        vector(i) <= start_value;
                     end loop;
                 elsif write_en = '1' then
                     vector <= data_in; 
@@ -38,4 +38,5 @@ architecture rtl of pipo is
         end process;
 
             data_out <= vector;
+            test <= vector(0);
     end rtl;

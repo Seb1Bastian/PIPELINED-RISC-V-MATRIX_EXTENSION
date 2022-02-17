@@ -8,8 +8,9 @@ entity nn_controller is
     port(
         --inputs
         clk             : in std_logic;
+        reset           : in std_logic;
         canRead         : in std_logic;
-        nn_opcode       : in std_logic_vector(23 downto 0);
+        nn_opcode       : in std_logic_vector(31 downto 0);
         load_finished   : in std_logic;
         mult_finished   : in std_logic;
         unload_finished : in std_logic;
@@ -30,15 +31,19 @@ end nn_controller;
 architecture rtl of nn_controller is
     type state is (waiting,loading,multiplying,unloading);
 
-    signal controls : std_logic_vector( 0 downto 0);
-    signal information : std_logic_vector(23 downto 0) := "00001" & "00001" & "00001" & "00001" & x"0";
-    signal op       : std_logic;
     signal current_state : state := waiting;
     signal next_state    : state := waiting;
-    signal rows1_i       : integer := 1;
-    signal columns1_i    : integer := 1;
-    signal rows2_i       : integer := 1;
-    signal columns2_i    : integer := 1;
+    signal rows1_i       : integer range 0 to max_size := 1;
+    signal columns1_i    : integer range 0 to max_size := 1;
+    signal rows2_i       : integer range 0 to max_size := 1;
+    signal columns2_i    : integer range 0 to max_size := 1;
+
+    signal rows1_ii       : integer range 1 to max_size := 1;
+    signal columns1_ii    : integer range 1 to max_size := 1;
+    signal rows2_ii       : integer range 1 to max_size := 1;
+    signal columns2_ii    : integer range 1 to max_size := 1;
+
+    signal read_data_i   : std_logic;
 
 
     function to_integer (constant i : in std_logic_vector) return INTEGER is
@@ -55,6 +60,9 @@ architecture rtl of nn_controller is
         return int_tmp;
     end to_integer;
 
+    signal vector_in : FOUR_BYTE_VECTOR (0 downto 0) := (others => x"01010101");
+    signal vector_out : FOUR_BYTE_VECTOR (0 downto 0) := (others => x"01010101");
+
 
 begin
 
@@ -63,15 +71,19 @@ begin
     rows2    <= rows2_i;  --columns1 and rows1 should be equal
     columns2 <= columns2_i;
 
-    rows1_i    <= to_integer(information(23 downto 19));
-    columns1_i <= to_integer(information(18 downto 14));
-    rows2_i    <= to_integer(information(13 downto 9));  --columns1 and rows1 should be equal
-    columns2_i <= to_integer(information(8 downto 4));
-    op         <= information(0);
+    rows1_i    <= to_integer(vector_out(0)(31 downto 24));
+    columns1_i <= to_integer(vector_out(0)(23 downto 16));
+    rows2_i    <= to_integer(vector_out(0)(15 downto 8));  --columns1 and rows1 should be equal
+    columns2_i <= to_integer(vector_out(0)(7 downto 0));
+    
+    inst_pipo : entity work.pipo(rtl)
+    generic map(1,x"01010101")
+    port map(clk => clk, reset => reset, write_en => read_data_i,
+             data_in => vector_in,
+             data_out => vector_out);
 
     process(current_state, canRead, nn_opcode, load_finished, mult_finished, unload_finished)begin
         if current_state = waiting and canRead = '1' then
-            information <= nn_opcode;
             next_state <= loading;
         elsif current_state = loading and load_finished = '1' then
             next_state <= multiplying;
@@ -79,6 +91,8 @@ begin
             next_state <= unloading;
         elsif current_state = unloading and unload_finished = '1' then
             next_state <= waiting;
+        else
+            next_state <= current_state;
         end if;
     end process;
 
@@ -88,9 +102,11 @@ begin
         end if;
     end process;
 
-    start_load   <= '1' when current_state = loading     else '0'; --op = '1' and
-    start_mult   <= '1' when current_state = multiplying else '0'; --op = '1' and
-    start_unload <= '1' when current_state = unloading   else '0'; --op = '1' and
-    read_data    <= '1' when current_state = waiting and canRead = '1' else '0';
+    start_load   <= '1' when current_state = loading     else '0';
+    start_mult   <= '1' when current_state = multiplying else '0';
+    start_unload <= '1' when current_state = unloading   else '0';
+    read_data_i  <= '1' when current_state = waiting and canRead = '1' else '0';
+    read_data    <= read_data_i;
+    vector_in(0) <= nn_opcode;
 
 end rtl;

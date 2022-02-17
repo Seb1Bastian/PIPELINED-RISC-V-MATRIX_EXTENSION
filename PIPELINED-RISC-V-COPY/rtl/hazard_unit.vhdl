@@ -31,7 +31,7 @@ entity hazard_unit is
         stall_e         : out std_logic;
         stall_m         : out std_logic;
         stall_w         : out std_logic;
-        flush_f         : out std_logic;
+        --flush_f         : out std_logic;
         flush_d         : out std_logic;
         flush_e         : out std_logic;
         flush_m         : out std_logic;
@@ -55,7 +55,7 @@ architecture rtl of hazard_unit is
     signal stall_e_normal : std_logic :='0';
     signal stall_m_normal : std_logic :='0';
     signal stall_w_normal : std_logic :='0';
-    signal flush_f_normal : std_logic :='0';
+    --signal flush_f_normal : std_logic :='0';
     signal flush_d_normal : std_logic :='0';
     signal flush_e_normal : std_logic :='0';
     signal flush_m_normal : std_logic :='0';
@@ -66,7 +66,7 @@ architecture rtl of hazard_unit is
     signal stall_e_nn : std_logic :='0';
     signal stall_m_nn : std_logic :='0';
     signal stall_w_nn : std_logic :='0';
-    signal flush_f_nn : std_logic :='0';
+    --signal flush_f_nn : std_logic :='0';
     signal flush_d_nn : std_logic :='0';
     signal flush_e_nn : std_logic :='0';
     signal flush_m_nn : std_logic :='0';
@@ -82,7 +82,7 @@ architecture rtl of hazard_unit is
         stall_e <= stall_e_normal or stall_e_nn;
         stall_m <= stall_m_normal or stall_m_nn;
         stall_w <= stall_w_normal or stall_w_nn;
-        flush_f <= flush_f_normal or flush_f_nn;
+        --flush_f <= flush_f_normal or flush_f_nn;
         flush_d <= flush_d_normal or flush_d_nn;
         flush_e <= flush_e_normal or flush_e_nn;
         flush_m <= flush_m_normal or flush_m_nn;
@@ -115,7 +115,7 @@ architecture rtl of hazard_unit is
         end process;
 
         --Stall when a load hazard occurs
-        process(rs1_d, rs2_d, rd_e, resultsrc_e0)begin
+        process(rs1_d, rs2_d, rd_e, resultsrc_e0, toAccelerator_e)begin
 
             if(((rs1_d = rd_e) or (rs2_d = rd_e)) and (resultsrc_e0 = '1') and (toAccelerator_e = '0'))then
                 lwStall <= '1';

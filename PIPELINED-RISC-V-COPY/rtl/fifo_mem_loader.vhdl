@@ -11,10 +11,10 @@ entity fifo_mem_loader is
         start           : in std_logic;
         reset           : in std_logic;  -- synchron Reset
         can_read        : in std_logic;
-        rows1           : in integer range 1 to max_size;
-        columns1        : in integer range 1 to max_size;
-        rows2           : in integer range 1 to max_size;
-        columns2        : in integer range 1 to max_size;
+        rows1           : in integer range 0 to max_size; --should be from 1 to max_size but ghdl doesnt allow it.
+        columns1        : in integer range 0 to max_size;
+        rows2           : in integer range 0 to max_size;
+        columns2        : in integer range 0 to max_size;
 
         --outputs
         finished_load   : out std_logic;
@@ -37,18 +37,16 @@ architecture rtl of fifo_mem_loader is
     signal current_state : state := waiting;
     signal next_state    : state;
     signal pos_x11_i, pos_x12_i ,pos_x21_i, pos_x22_i : integer  range 0 to max_size := 0;
-    signal column1dif, row2dif : integer  range 0 to max_size-1 := 0;
+    signal column1dif, row2dif : integer  range 0 to max_size := 0;
 
     begin
 
-        aa :process(clk,start,reset)
+        aa :process(current_state,clk,start,reset,rows1,columns1,rows2,columns2,pos_x11_i,pos_x12_i,pos_x21_i,pos_x22_i,can_read)
         begin
             if current_state = waiting and start = '1' then
                 next_state <= init;
             elsif current_state = init then
                 next_state <= matrix_1;
-                column1dif <= max_size - columns1;
-                row2dif <= max_size - rows2;
             elsif current_state = matrix_1 and pos_x11_i = rows1-1 and pos_x12_i = max_size-1 and can_read = '1' then
                 next_state <= matrix_2;
             elsif current_state = matrix_2 and pos_x21_i = max_size-1 and pos_x22_i = columns2-1 and can_read = '1' then
@@ -57,6 +55,8 @@ architecture rtl of fifo_mem_loader is
                 next_state <= finished2;
             elsif current_state = finished2 then
                 next_state <= waiting;
+            else
+                next_state <= current_state;
             end if;
         end process;
 
@@ -128,6 +128,8 @@ architecture rtl of fifo_mem_loader is
         read_data <= '1' when (current_state = matrix_1 or current_state = matrix_2)  and can_read = '1' else '0';
         finished_load <= '1' when current_state = finished else '0';
         init_grid <= '1' when current_state = init else '0';
+        column1dif <= max_size - columns1;
+        row2dif <= max_size - rows2;
         pos_x11 <= pos_x11_i;
         pos_x12 <= pos_x12_i;
         pos_x21 <= pos_x21_i;

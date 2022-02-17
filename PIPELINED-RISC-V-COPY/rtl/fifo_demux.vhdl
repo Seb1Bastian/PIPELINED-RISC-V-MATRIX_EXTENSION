@@ -13,14 +13,13 @@ entity fifo_demux is
 end fifo_demux;
 
 architecture rtl of fifo_demux is
-    Signal intern : std_logic_vector(31 downto 0) := x"00000000";
   begin
     process(port_in, sel) begin
       for i in 0 to N-1 loop
         if i = sel then
           port_out(i) <= port_in;
         else
-          port_out(i) <= intern;
+          port_out(i) <= x"00000000";
         end if;
       end loop;
     end process;

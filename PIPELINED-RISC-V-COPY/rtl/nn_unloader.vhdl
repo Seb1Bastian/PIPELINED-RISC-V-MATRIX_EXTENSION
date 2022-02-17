@@ -32,20 +32,26 @@ begin
 
 
 
-    process(current_state,reset,start_unload,reset, pos_x1, pos_x2)
+    process(current_state,reset,start_unload,reset, pos_x1, pos_x2,rows,columns,write_en)
     begin
         if reset = '1' then
             next_state <= waiting;
         elsif current_state = waiting and start_unload = '1' then
             next_state <= init;
+        elsif current_state = waiting then
+            next_state <= waiting;
         elsif current_state = init then
             next_state <= unloading;
-        elsif current_state = unloading and pos_x1 = rows-1 and pos_x2 = columns-1 then
+        elsif current_state = unloading and pos_x1 = rows-1 and pos_x2 = columns-1 and write_en = '1' then
             next_state <= finished;
+        elsif current_state = unloading then
+            next_state <= unloading;
         elsif current_state = finished then
             next_state <= finished2;
         elsif current_state = finished2 then
             next_state <= waiting;
+        else
+            next_state <= current_state;
         end if;
     end process;
 

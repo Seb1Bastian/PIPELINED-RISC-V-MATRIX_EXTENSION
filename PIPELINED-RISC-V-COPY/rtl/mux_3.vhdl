@@ -17,12 +17,10 @@ architecture rtl of mux_3 is
   begin
     process(sel,a,b,c)
       begin
-        if(sel = "00")then
-          y <= a;
-        elsif(sel = "01")then
-          y <= b;
-        elsif (sel = "10") then
-          y <= c;
-        end if;
+        case (sel) is
+            when "01" => y <= b;
+            when "10" => y <= c;
+            when others => y <=a;
+         end case;
       end process;
 end rtl;

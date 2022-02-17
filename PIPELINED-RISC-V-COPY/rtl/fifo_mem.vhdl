@@ -38,9 +38,9 @@ architecture rtl of fifo_mem is
         generic map(size)
         port map(port_in   => read_vector, sel => adr_read, port_out => data_out);
 
-        inst_demux : entity work.fifo_demux(rtl)
-        generic map(size)
-        port map(port_in   => data_in, sel => adr_write , port_out => write_vector);
+        --inst_demux : entity work.fifo_demux(rtl)
+        --generic map(size)
+        --port map(port_in   => data_in, sel => adr_write , port_out => write_vector);
 
         inst_pipo : entity work.pipo(rtl)
         generic map(size)
@@ -48,7 +48,7 @@ architecture rtl of fifo_mem is
 
         inst_comb : entity work.vec_combiner(rtl)
         generic map(size)
-        port map(a =>write_vector , b=> read_vector, sel=> adr_write, c=> write_vector_com );
+        port map(a =>data_in , b=> read_vector, sel=> adr_write, c=> write_vector_com );
         
 
         can_write <= can_write_inte;

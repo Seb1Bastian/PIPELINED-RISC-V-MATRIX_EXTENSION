@@ -12,12 +12,15 @@ architecture test of ALU_tb is
     signal ALUControl : std_logic_vector(2 downto 0);
     signal Zero : std_logic;
     signal ALUResult : std_logic_vector(31 downto 0);
+	signal a : std_logic;
 
     begin
         inst_ALU : entity work.ALU(rtl)
                     port map(SrcA => SrcA, SrcB => SrcB, ALUControl => ALUControl, Zero => Zero, ALUresult => ALUResult);
         
         process begin
+            SrcA <= x"00000001";
+            SrcB <= x"00000010";
             ALUControl <= "000";
             wait for 5 ns;
             ALUControl <= "001";
@@ -30,10 +33,19 @@ architecture test of ALU_tb is
             wait for 5 ns;
             ALUControl <= "111";
             wait for 5 ns;
+            ALUControl <= "110";
+			wait for 5 ns;
+            SrcA <= x"00000001";
+            SrcB <= x"00000001";
+            wait for 5 ns;
+            SrcA <= x"00000001";
+            SrcB <= x"00000100";
+            wait for 5 ns;
+            SrcA <= x"00000103";
+            SrcB <= x"00000001";
+            wait for 5 ns;
             wait;
         end process;
 
-        SrcA <= x"00000001";
-        SrcB <= x"00000010";
 
     end test;

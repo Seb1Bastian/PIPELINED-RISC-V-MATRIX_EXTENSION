@@ -3,11 +3,12 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity pipe_risc_v_nn is
-    generic(interface_size : integer; matrix_size : integer);
+    generic(interface_size : integer :=15; matrix_size : integer:=8);
     port(
         clk_cpu         : in std_logic;
         clk_nn          : in std_logic;
-        reset           : in std_logic
+        reset           : in std_logic;
+        dtest           : out std_logic_vector(31 downto 0)
     );
 end pipe_risc_v_nn;
 
@@ -53,6 +54,9 @@ architecture rtl of pipe_risc_v_nn is
         generic map(matrix_size)
         port map(clk => clk_nn, reset => reset, data_in => dataFromCPU, can_write => canWriteToCPU, can_read => canReadFromCPU, 
                     readFromCPU => readDataFromCPU, writeToCPU => writeDataToCPU, data_out => dataToCPU);
+
+
+        dtest <= dataToAccelerator;
         
         
 

@@ -18,14 +18,11 @@ architecture rtl of mux_4 is
   begin
     process(sel,a,b,c,d)
       begin
-        if(sel = "00")then
-          y <= a;
-        elsif(sel = "01")then
-          y <= b;
-        elsif (sel = "10") then
-          y <= c;
-        elsif (sel = "11") then
-          y <= d;
-        end if;
+        case (sel) is
+            when "01" => y <= b;
+            when "10" => y <= c;
+            when "11" => y <= d;
+            when others => y <=a;
+         end case;
       end process;
 end rtl;

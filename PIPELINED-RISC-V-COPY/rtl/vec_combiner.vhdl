@@ -6,7 +6,7 @@ use work.fifo_mem_pack.ALL;
 entity vec_combiner is
   generic(N : integer := 32);
   port (
-    a   : in FOUR_BYTE_VECTOR(N-1 downto 0);
+    a   : in std_logic_vector(31 downto 0);
     b   : in FOUR_BYTE_VECTOR(N-1 downto 0);
     sel : in integer;
     c   : out FOUR_BYTE_VECTOR(N-1 downto 0)
@@ -18,7 +18,7 @@ architecture rtl of vec_combiner is
     process(a, b, sel) begin
       for i in 0 to N-1 loop
         if i = sel then
-          c(i) <= a(i);
+          c(i) <= a;
         else
           c(i) <= b(i);
         end if;

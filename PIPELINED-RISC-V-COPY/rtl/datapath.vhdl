@@ -12,7 +12,7 @@ entity datapath is
         en_de               : in std_logic;
         en_em               : in std_logic;
         en_mw               : in std_logic;
-        clr_pc              : in std_logic;
+        --clr_pc              : in std_logic;
         clr_fd              : in std_logic;
         clr_de              : in std_logic;
         clr_em              : in std_logic;

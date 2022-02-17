@@ -23,11 +23,11 @@ architecture rtl of data_memr is
 
     type ram_type is array (63 downto 0) of std_logic_vector(31 downto 0);
     
-    signal mem : ram_type := ((0) => (x"00000" & "00" &"00011" & "00011"),
+    signal mem : ram_type := ((0) => (x"0000" & x"03" & x"03"),
                               (1) => (x"03020100"),
                               (2) => (x"07060504"),
                               (3) => (x"00000008"),
-                              (4) => (x"00000" & "00" &"00011" & "00011"),
+                              (4) => (x"0000" & x"03" & x"03"),
                               (5) => (x"0D0C0B0A"),
                               (6) => (x"11100F0E"),
                               (7) => (x"00000012"),
@@ -57,7 +57,7 @@ architecture rtl of data_memr is
         
 
 
-        process(addr_port,clk)begin
+        process(addr_port,clk,mem,byte_en)begin
              case( byte_en ) is
                 when '0' => read_data <= mem(to_integer(unsigned(addr_port(7 downto 2))));
                 when '1' => case( addr_port(1 downto 0)) is
