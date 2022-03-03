@@ -41,15 +41,16 @@ architecture rtl of data_memr is
                     if(write_en = '1')then
                         case( byte_en ) is
                             when '0' => mem(to_integer(unsigned(addr_port(7 downto 2)))) <= write_data;
-                            when '1' => case( addr_port(1 downto 0)) is
-                                            when "00" => mem(to_integer(unsigned(addr_port(7 downto 2))))(7 downto 0) <= write_data(7 downto 0);
-                                            when "01" => mem(to_integer(unsigned(addr_port(7 downto 2))))(15 downto 8) <= write_data(7 downto 0);
-                                            when "10" => mem(to_integer(unsigned(addr_port(7 downto 2))))(23 downto 16) <= write_data(7 downto 0);
-                                            when "11" => mem(to_integer(unsigned(addr_port(7 downto 2))))(31 downto 24) <= write_data(7 downto 0);
-                                            when others => mem(to_integer(unsigned(addr_port(7 downto 2)))) <= "11111111111111111111111111111111";
-                                        end case;
+                            when '1' => 
+                                case( addr_port(1 downto 0)) is
+                                    when "00" => mem(to_integer(unsigned(addr_port(7 downto 2))))(7 downto 0) <= write_data(7 downto 0);
+                                    when "01" => mem(to_integer(unsigned(addr_port(7 downto 2))))(15 downto 8) <= write_data(7 downto 0);
+                                    when "10" => mem(to_integer(unsigned(addr_port(7 downto 2))))(23 downto 16) <= write_data(7 downto 0);
+                                    when "11" => mem(to_integer(unsigned(addr_port(7 downto 2))))(31 downto 24) <= write_data(7 downto 0);
+                                    when others => mem(to_integer(unsigned(addr_port(7 downto 2)))) <= "11111111111111111111111111111111";
+                                end case;
                             when others => mem(to_integer(unsigned(addr_port(7 downto 2)))) <= "10101010101010101010101010101010";
-                        end case ;
+                        end case;
                     end if;
                 end if;
         end process;

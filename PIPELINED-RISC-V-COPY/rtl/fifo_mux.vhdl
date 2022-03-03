@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
-entity fifo_mux is
+entity fifo_mux is                                --standard multiplexer
   generic(N : integer := 32);
   port (
     port_in   : in FOUR_BYTE_VECTOR(N-1 downto 0);

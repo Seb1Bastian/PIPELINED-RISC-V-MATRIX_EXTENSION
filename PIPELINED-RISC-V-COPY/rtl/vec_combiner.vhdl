@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
-entity vec_combiner is
-  generic(N : integer := 32);
+entity vec_combiner is                        --Put value a at postion s in b and put that result out.
+  generic(N : integer := 32);                 --Number of 32 Bit values in the FOUR_BYTE_VECTOR
   port (
     a   : in std_logic_vector(31 downto 0);
     b   : in FOUR_BYTE_VECTOR(N-1 downto 0);

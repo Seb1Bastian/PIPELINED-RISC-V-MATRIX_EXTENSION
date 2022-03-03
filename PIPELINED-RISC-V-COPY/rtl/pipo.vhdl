@@ -4,13 +4,14 @@ use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
 entity pipo is
-    generic(size : integer range 1 to 255 := 3; start_value : std_logic_vector(31 downto 0) := x"00000000"); -- the max
+    generic(size : integer range 1 to 255 := 3;                             --size of the pipo-Register
+            start_value : std_logic_vector(31 downto 0) := x"00000000");    --defines the value at the beginning in every cell.
     port(
         --inputs
         clk         : in std_logic;
-        reset       : in std_logic;  -- synchron Reset
+        reset       : in std_logic;                             -- synchron Reset
         write_en    : in std_logic;
-        data_in        : in FOUR_BYTE_VECTOR(size-1 downto 0);
+        data_in     : in FOUR_BYTE_VECTOR(size-1 downto 0);
 
         --outputs
         data_out    : out FOUR_BYTE_VECTOR(size-1 downto 0) 
@@ -21,7 +22,7 @@ end pipo;
 architecture rtl of pipo is
 
     signal vector : FOUR_BYTE_VECTOR (size-1 downto 0) := (others => start_value);
-    signal test : std_logic_vector(31 downto 0);
+    --signal test : std_logic_vector(31 downto 0);
     
     begin
         process(clk)
@@ -37,6 +38,6 @@ architecture rtl of pipo is
             end if;
         end process;
 
-            data_out <= vector;
-            test <= vector(0);
+        data_out <= vector;
+        --test <= vector(0);
     end rtl;

@@ -27,7 +27,7 @@ architecture rtl of nn is
     signal start_load       : std_logic;
     signal start_mult       : std_logic;
     signal start_unload     : std_logic;
-    signal reset_load       : std_logic := '0';
+    --signal reset_load       : std_logic := '0';
     signal next_input       : std_logic;
     signal read_data_mc     : std_logic;
     signal read_data_lo     : std_logic;
@@ -51,7 +51,7 @@ architecture rtl of nn is
     signal data_out_grid2   : BYTE_GRID(max_size-1 downto 0, max_size-1 downto 0);
     signal write_en_tri1    : std_logic;
     signal write_en_tri2    : std_logic;
-    signal  matrix            : BYTE_GRID(max_size-1 downto 0, max_size-1 downto 0);
+    signal  matrix          : BYTE_GRID(max_size-1 downto 0, max_size-1 downto 0);
 
 
 begin
@@ -86,7 +86,7 @@ begin
     port map(
         clk         => clk,
         start       => start_load,
-        reset       => reset_load,
+        reset       => '0',
         can_read    => can_read,
         rows1       => rows1,
         columns1    => columns1,

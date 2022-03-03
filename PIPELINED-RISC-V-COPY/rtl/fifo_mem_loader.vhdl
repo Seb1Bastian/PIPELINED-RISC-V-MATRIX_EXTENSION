@@ -9,23 +9,23 @@ entity fifo_mem_loader is
         --inputs
         clk             : in std_logic;
         start           : in std_logic;
-        reset           : in std_logic;  -- synchron Reset
+        reset           : in std_logic;                     -- synchron Reset
         can_read        : in std_logic;
-        rows1           : in integer range 0 to max_size; --should be from 1 to max_size but ghdl doesnt allow it.
-        columns1        : in integer range 0 to max_size;
+        rows1           : in integer range 0 to max_size;   --says how big the matrix are
+        columns1        : in integer range 0 to max_size;   --should be from 1 to max_size but ghdl doesn't want it to happen.
         rows2           : in integer range 0 to max_size;
         columns2        : in integer range 0 to max_size;
 
         --outputs
         finished_load   : out std_logic;
-        read_data       : out std_logic;
+        read_data       : out std_logic;                        --
         init_grid       : out std_logic;
-        pos_x11         : out integer range 0 to max_size-1;
+        pos_x11         : out integer range 0 to max_size-1;    --index for the next value
         pos_x12         : out integer range 0 to max_size-1;
         pos_x21         : out integer range 0 to max_size-1;
         pos_x22         : out integer range 0 to max_size-1;
-        write_en1       : buffer std_logic;
-        write_en2       : buffer std_logic
+        write_en1       : buffer std_logic;                     --says whether the conditions are met to write a value into the matrix 1 memory with the next positive clock edge.
+        write_en2       : buffer std_logic                      --says whether the conditions are met to write a value into the matrix 2 memory with the next positive clock edge.
     );
 end fifo_mem_loader;
 
@@ -43,11 +43,11 @@ architecture rtl of fifo_mem_loader is
 
         aa :process(current_state,clk,start,reset,rows1,columns1,rows2,columns2,pos_x11_i,pos_x12_i,pos_x21_i,pos_x22_i,can_read)
         begin
-            if current_state = waiting and start = '1' then
+            if current_state = waiting and start = '1' then                                                                 --initilaize loading if controllsignal says start
                 next_state <= init;
             elsif current_state = init then
                 next_state <= matrix_1;
-            elsif current_state = matrix_1 and pos_x11_i = rows1-1 and pos_x12_i = max_size-1 and can_read = '1' then
+            elsif current_state = matrix_1 and pos_x11_i = rows1-1 and pos_x12_i = max_size-1 and can_read = '1' then       --start loading matrix 2 if matrix 1 is ready
                 next_state <= matrix_2;
             elsif current_state = matrix_2 and pos_x21_i = max_size-1 and pos_x22_i = columns2-1 and can_read = '1' then
                 next_state <= finished;
@@ -73,7 +73,7 @@ architecture rtl of fifo_mem_loader is
 
         
 
-        cc : process(clk)
+        cc : process(clk)                               --Computes the index for the next value (for the first matrix).
         begin
             if(rising_edge(clk)) then
                 if(reset = '1') then
@@ -98,7 +98,7 @@ architecture rtl of fifo_mem_loader is
         end process;
 
 
-        dd : process(clk)
+        dd : process(clk)                               --Computes the index for the next value (for the second matrix).
         begin
             if(rising_edge(clk)) then
                 if(reset = '1') then

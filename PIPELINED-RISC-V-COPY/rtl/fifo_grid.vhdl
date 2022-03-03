@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
-entity fifo_grid is
-    generic(max_size : integer); -- the max
+entity fifo_grid is                     --Is a memory for a byte matrix that can shift all values one colum deeper per clock pulse
+    generic(max_size : integer);
     port(
         --inputs
         clk         : in std_logic;
@@ -44,7 +44,7 @@ architecture rtl of fifo_grid is
                             grid(i,j) <= grid(i,j-1);
                         end loop ;     
                     end loop ;
-                    for i in max_size-1 downto 0 loop
+                    for i in max_size-1 downto 0 loop               --The first colum is filled with zero when shifting.
                         grid(i,0) <= x"00";
                     end loop ;
                 end if;

@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity interface is
-    generic(size    : integer range 1 to 255 := 15); 
+    generic(size    : integer range 1 to 255 := 15);        --Number of 32 Bit values can be buffered in each direction.
     port(
         --inputs
         clk_1        : in std_logic;
