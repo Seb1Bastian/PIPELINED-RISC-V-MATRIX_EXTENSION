@@ -58,7 +58,7 @@ begin
 
     readFromCPU <= read_data_mc or read_data_lo;
 
-    main_controller : entity work.nn_controller(rtl)
+    main_controller : entity work.nn_controller(rtl)    --the main controller knows is
     generic map( max_size => max_size)
     port map(
         --inputs
@@ -81,7 +81,7 @@ begin
         columns2        => columns2
     );
 
-    fifo_mem_loader : entity work.fifo_mem_loader(rtl)
+    fifo_mem_loader : entity work.fifo_mem_loader(rtl)      --computes the position where the value form the interface should be stored
     generic map (max_size => max_size)
     port map(
         clk         => clk,
@@ -104,7 +104,7 @@ begin
         pos_x22     => pos_x22
     );
 
-    unloader : entity work.nn_unloader(rtl)
+    unloader : entity work.nn_unloader(rtl)     --read the result matrix and puts the result in the interface to the cpu
     generic map (max_size => max_size) -- the max number of rows and colums in the matrix.
     port map(
         --inputs
@@ -121,7 +121,7 @@ begin
         data_out        => data_out
     );
 
-    fifo_grid_matrix1 : entity work.fifo_grid(rtl)
+    fifo_grid_matrix1 : entity work.fifo_grid(rtl)              -- zwischenspeicher for the frist matrix
     generic map (max_size => max_size)
     port map(
         --inputs
@@ -136,7 +136,7 @@ begin
         data_out    => data_out_grid1
     );
 
-    fifo_grid_matrix2 : entity work.fifo_grid_vertical(rtl)
+    fifo_grid_matrix2 : entity work.fifo_grid_vertical(rtl)     -- zwischenspeicher for the second matrix
     generic map(max_size => max_size)
     port map(
         --inputs
@@ -151,7 +151,7 @@ begin
         data_out    => data_out_grid2
     );
 
-    sa : entity work.sa(rtl)
+    sa : entity work.sa(rtl)                                    -- multiplies the two matrix with eachother
     generic map(max_size)
     port map(
         clk => clk,

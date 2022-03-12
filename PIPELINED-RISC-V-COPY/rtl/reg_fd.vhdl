@@ -26,11 +26,11 @@ architecture rtl of reg_fd is
     begin
         process(clk)begin
           if rising_edge(clk) then
-            if clr = '1' then
+            if clr = '1' then                   --flush the register
               memory(0) <= (others => '0');
               memory(1) <= (others => '0');
               memory(2) <= (others => '0');
-            elsif en = '1' then
+            elsif en = '1' then                 --update the register/not stall the register
               memory(0) <= rd;
               memory(1) <= pc_f;
               memory(2) <= pcplus4_f;

@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
 entity pipo is
-    generic(size : integer range 1 to 255 := 3;                             --size of the pipo-Register
+    generic(size : integer range 1 to 255 := 3;                             --number of 32 Bit values stored in the pipo-Register
             start_value : std_logic_vector(31 downto 0) := x"00000000");    --defines the value at the beginning in every cell.
     port(
         --inputs

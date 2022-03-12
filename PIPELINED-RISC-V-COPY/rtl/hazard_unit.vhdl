@@ -139,7 +139,7 @@ architecture rtl of hazard_unit is
 
 
 
-        --Stall when you want to write to the interface but the buffer is full.
+        --Stall the complete pipeline when you want to write to the interface but the buffer is full.
         process(canWriteDataToAccelerator, toAccelerator_w)
         begin
             if(canWriteDataToAccelerator = '0' and toAccelerator_w = '1') then
@@ -149,7 +149,7 @@ architecture rtl of hazard_unit is
             end if;
         end process;
 
-        --Stall when you want to read from the interface but the buffer is empty.
+        --Stall the pipeline stages f,d,e and flush m when you want to read from the interface but the buffer is empty.
         process(canReadDataFromAccelerator, fromAccelerator_e)
         begin
             if(canReadDataFromAccelerator = '0' and fromAccelerator_e = '1') then
@@ -165,7 +165,7 @@ architecture rtl of hazard_unit is
         stall_m_nn <= waitToWrite;
         stall_w_nn <= waitToWrite;
 
-        flush_m_nn <= waitToRead and (not waitToWrite); --?
+        flush_m_nn <= waitToRead and (not waitToWrite); --when the whole pipeline is stalled you should not flush one pipeline stage in order to try blocking wrong information (it is already blocking)
                 
 
       --  stall_f <= lwStall;

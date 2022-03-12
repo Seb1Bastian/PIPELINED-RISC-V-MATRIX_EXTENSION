@@ -48,7 +48,7 @@ architecture rtl of reg_mw is
     begin
         process(clk)begin
             if rising_edge(clk) then
-                if clr_mw = '1' then
+                if clr_mw = '1' then                            --flush the register
                     memory_32 <= (others => (others => '0'));
                     
                     memory_5(0) <= (others => '0');
@@ -56,7 +56,7 @@ architecture rtl of reg_mw is
                     memory_1 <= (others => '0');
     
                     nn_signals <= (others => '0');
-                elsif en_mw = '1' then
+                elsif en_mw = '1' then                          --update the register/not stall the register
                     
                     memory_32(0)    <= aluresult_m;
                     memory_32(1)    <= rd;

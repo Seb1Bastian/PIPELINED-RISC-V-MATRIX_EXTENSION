@@ -53,13 +53,13 @@ architecture rtl of reg_em is
     begin
         process(clk)begin
             if rising_edge(clk) then
-                if clr_em = '1' then
+                if clr_em = '1' then                            --flush the register
                     memory_32 <= (others => (others => '0'));
                     memory_5(0) <= (others => '0');
                     memory_2(0) <= (others => '0');
                     memory_1 <= (others =>  '0');
                     nn_signals <= (others =>  '0');
-                elsif en_em = '1' then
+                elsif en_em = '1' then                          --update the register/not stall the register
                     memory_32(0)    <= aluresult;
                     memory_32(1)    <= writedata_e;
                     memory_32(2)    <= pcplus4_e;

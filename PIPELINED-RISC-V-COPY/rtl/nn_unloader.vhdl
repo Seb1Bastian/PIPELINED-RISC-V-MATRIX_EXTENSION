@@ -62,7 +62,7 @@ begin
         end if;
     end process;
 
-    process(clk) begin
+    process(clk) begin                                      --Computes the index for the next value that should be read.
         if(rising_edge(clk)) then
             if reset = '1' then
                 pos_x1 <= 0;

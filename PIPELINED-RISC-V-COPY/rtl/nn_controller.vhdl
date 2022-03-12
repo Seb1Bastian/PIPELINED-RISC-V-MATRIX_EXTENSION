@@ -11,7 +11,7 @@ entity nn_controller is
         reset           : in std_logic;
         canRead         : in std_logic;
         nn_opcode       : in std_logic_vector(31 downto 0);
-        load_finished   : in std_logic;
+        load_finished   : in std_logic;                         -- controller goes into the nextstate if the one before is finished
         mult_finished   : in std_logic;
         unload_finished : in std_logic;
 
@@ -37,11 +37,6 @@ architecture rtl of nn_controller is
     signal columns1_i    : integer range 0 to max_size := 1;
     signal rows2_i       : integer range 0 to max_size := 1;
     signal columns2_i    : integer range 0 to max_size := 1;
-
-    signal rows1_ii       : integer range 1 to max_size := 1;
-    signal columns1_ii    : integer range 1 to max_size := 1;
-    signal rows2_ii       : integer range 1 to max_size := 1;
-    signal columns2_ii    : integer range 1 to max_size := 1;
 
     signal read_data_i   : std_logic;
 
@@ -77,7 +72,7 @@ begin
     columns2_i <= to_integer(vector_out(0)(7 downto 0));
     
     inst_pipo : entity work.pipo(rtl)
-    generic map(1,x"01010101")
+    generic map(1,x"01010101")                                      --startvalue x"01010101" => 1x1 Matrix
     port map(clk => clk, reset => reset, write_en => read_data_i,
              data_in => vector_in,
              data_out => vector_out);

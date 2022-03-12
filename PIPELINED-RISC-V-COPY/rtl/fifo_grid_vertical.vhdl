@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.fifo_mem_pack.ALL; 
 
-entity fifo_grid_vertical is        --Is a memory for a byte matrix that can shift all values one row lower per clock pulse
+entity fifo_grid_vertical is        --Is a memory for a byte matrix that can shift all values one row deeper lower per clock pulse
     generic(max_size : integer);
     port(
         --inputs

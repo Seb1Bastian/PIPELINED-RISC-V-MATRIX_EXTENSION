@@ -73,14 +73,14 @@ architecture rtl of reg_de is
     begin
         process(clk, clr_de) begin
           if rising_edge(clk)then
-            if(clr_de = '1')then
+            if(clr_de = '1')then                                --flush the register
                 memory_32   <= (others => (others => '0'));
                 memory_5    <= (others => (others => '0'));
                 memory_3    <= (others => (others => '0'));
                 memory_2    <= (others => (others => '0'));
                 memory_1    <= (others => '0');
                 nn_signals  <= (others => '0');
-            elsif en_de = '1' then
+            elsif en_de = '1' then                              --update the register/not stall the register
               memory_32(0)    <= rd1;
               memory_32(1)    <= rd2;
               memory_32(2)    <= pc_d;
