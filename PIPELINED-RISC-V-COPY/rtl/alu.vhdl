@@ -17,6 +17,7 @@ end ALU;
 architecture rtl of ALU is
 
     signal alu_res : std_logic_vector(31 downto 0);
+    signal eight_res : std_logic_vector(7 downto 0);
     
     begin
         process(SrcA, SrcB, ALUControl)begin
@@ -36,13 +37,23 @@ architecture rtl of ALU is
                     else 
                     alu_res <= x"00000000";
                     end if;
-                when "110" =>
-                    alu_res <= std_logic_vector(shift_left(unsigned(SrcA), to_integer(unsigned(SrcB))));
+                --shift left
+                when "110" => alu_res <= std_logic_vector(shift_left(unsigned(SrcA), to_integer(unsigned(SrcB))));
+                --eight Bit Addition
+                when "111" => alu_res <= x"000000" & eight_res;
+                --Undefined
                 when others => alu_res <= (others => 'U');
                 end case;
             end process;
+
+
+            inst_eightBitAdder : entity work.eightBitAdder(rtl)
+            port map(
+                a => SrcA(7 downto 0),
+                b => SrcB(7 downto 0),
+                res => eight_res
+            );
             
             Zero <= '1' when alu_res = x"00000000" else '0';
-
             ALUResult <= alu_res;
     end rtl;

@@ -28,6 +28,7 @@ architecture rtl of ALU_Decoder is
                             when "110" => ALUControl <= "011"; --or
                             when "111" => ALUControl <= "010"; --and
                             when "001" => ALUControl <= "110"; --shift left
+                            when "011" => ALUControl <= "111"; --addByte
                             when others => ALUControl <= "---"; --undefined
                             end case;
             end case;

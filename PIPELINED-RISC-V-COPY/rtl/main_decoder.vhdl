@@ -46,6 +46,7 @@ architecture rtl of main_decoder is
                 when "1101100" => controls <= "00111--0000"; NNcontrols <= "01"; bytecontrol <= '1';    --1101100 fromAcceleratorB
                 when "1110000" => controls <= "10010110000"; bytecontrol <= '1';                        --1110000 loadByte (bytecontrol does not need to be 1 because Resultsrc is so choosen that the byteInput is choosen)
                 when "1110100" => controls <= "00111--0000"; bytecontrol <= '1';                        --1110100 storeByte
+                when "1111000" => controls <= "1--00000100";                                            --1111000 addByte
                 when others    => controls <= "-----------"; --undefined for other cases
             end case;
         end process;
