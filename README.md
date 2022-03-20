@@ -1,6 +1,6 @@
 # PIPELINED-RISC-V in VHDL
 
-![image]()
+![image](https://github.com/Seb1Bastian/PIPELINED-RISC-V-EXTENSION/blob/main/RISC-V_with_Extension.png)
 
 ## Requirements
 * **GHDL**
