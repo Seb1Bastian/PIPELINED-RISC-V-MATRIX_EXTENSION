@@ -4,6 +4,10 @@ ghdl -s rtl/adder.vhdl
 ghdl -a rtl/adder.vhdl
 ghdl -e adder
 
+ghdl -s rtl/eightBitAdder.vhdl
+ghdl -a rtl/eightBitAdder.vhdl
+ghdl -e eightBitAdder
+
 ghdl -s rtl/alu.vhdl
 ghdl -a rtl/alu.vhdl
 ghdl -e alu
@@ -98,6 +102,26 @@ ghdl -e fifo_mux
 ghdl -s rtl/vec_combiner.vhdl
 ghdl -a rtl/vec_combiner.vhdl
 ghdl -e vec_combiner
+
+ghdl -s rtl/siso.vhdl
+ghdl -a rtl/siso.vhdl
+ghdl -e siso
+
+ghdl -s rtl/d_ff.vhdl
+ghdl -a rtl/d_ff.vhdl
+ghdl -e d_ff
+
+ghdl -s rtl/greyCode_to_bitCode.vhdl
+ghdl -a rtl/greyCode_to_bitCode.vhdl
+ghdl -e greyCode_to_bitCode
+
+ghdl -s rtl/bitCode_to_greyCode.vhdl
+ghdl -a rtl/bitCode_to_greyCode.vhdl
+ghdl -e bitCode_to_greyCode
+
+ghdl -s rtl/greyCodeCounter.vhdl
+ghdl -a rtl/greyCodeCounter.vhdl
+ghdl -e greyCodeCounter
 
 ghdl -s rtl/fifo_mem.vhdl
 ghdl -a rtl/fifo_mem.vhdl

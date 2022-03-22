@@ -29,7 +29,7 @@ architecture rtl of interface_tb is
 
 begin
     inst_interface : entity work.interface(rtl)
-    generic map(4)
+    generic map(2)
     port map(clk_1 => clk_1, clk_2=> clk_2, reset => reset, data_in1=> data_in1, data_in2 => data_in2, write_data_1=> write_data_1, write_data_2=> write_data_2,
              read_data_1 => read_data_1, read_data_2=> read_data_2, data_out1=> data_out1, data_out2=> data_out2,
              can_write1=> can_write1, can_write2=> can_write2, can_read1 => can_read1, can_read2 => can_read2 );

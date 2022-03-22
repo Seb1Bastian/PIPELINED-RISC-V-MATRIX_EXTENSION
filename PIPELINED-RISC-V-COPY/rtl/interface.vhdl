@@ -35,7 +35,7 @@ begin
 
 
    fifo_mem_1to2 : entity work.fifo_mem(rtl)
-   generic map(size => size)
+   generic map(size)
    port map(
        clk_1       => clk_1,
        clk_2       => clk_2,
@@ -50,7 +50,7 @@ begin
    );
 
    fifo_mem_2to1 : entity work.fifo_mem(rtl)
-   generic map (size => size)
+   generic map (size)
    port map (
        clk_1       => clk_2,
        clk_2       => clk_1,
