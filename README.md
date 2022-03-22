@@ -37,4 +37,6 @@ Bash must be open in the directory of the project!
   https://riscv.org/technical/specifications/
   
 4. https://github.com/TUD-CPU/PIPELINED-RISC-V
+
+5. http://www.sunburst-design.com/papers/CummingsSNUG2002SJ_FIFO1.pdf
  
