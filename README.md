@@ -29,7 +29,7 @@ Bash must be open in the directory of the project!
 ## References
 
 1. David M. Harris and Sarah L. Harris, "Digital Design and Computer Architecture, RISC-V Edition"  
-  http://pages.hmc.edu/harris/class/e85/lect23.pdf
+  http://pages.hmc.edu/harris/class/e85/old/fall21/lect23.pdf
 
 2. David A. Patterson, John L. Hennessy, “Computer Organization and Design RISC-V Edition: The Hardware Software Interface”, Morgan Kaufmann, 2017.
 
@@ -37,4 +37,6 @@ Bash must be open in the directory of the project!
   https://riscv.org/technical/specifications/
   
 4. https://github.com/TUD-CPU/PIPELINED-RISC-V
+
+5. http://www.sunburst-design.com/papers/CummingsSNUG2002SJ_FIFO1.pdf
  
