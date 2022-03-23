@@ -20,9 +20,13 @@
 Also you can compile and look on wave diagrams in GTKWave with command  
   
       $ bash script_v3.sh
+      $ ghdl -s rtl/pipe_risc_v_nn_tb.vhdl
+      $ ghdl -a rtl/pipe_risc_v_nn_tb
+      $ ghdl -e pipe_risc_v_nn_tb
       $ ghdl -r pipe_risc_v_nn_tb --vcd=testbench.vcd  #VCD-Dump  
       $ gtkwave testbench.vcd                          #Start GTKWave
       
+This tests the instructions in instr_mem.vhdl      
 Bash must be open in the directory of the project!
  
 
