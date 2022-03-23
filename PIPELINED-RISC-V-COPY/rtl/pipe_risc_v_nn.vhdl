@@ -3,12 +3,12 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity pipe_risc_v_nn is
-    generic(interface_size : integer :=15; matrix_size : integer:=8);
+    generic(interface_size : integer :=3; matrix_size : integer:=4);
     port(
         clk_cpu         : in std_logic;
         clk_nn          : in std_logic;
         reset           : in std_logic;
-        dtest           : out std_logic_vector(31 downto 0)
+        dtest           : out std_logic_vector(31 downto 0)             --output so that vivado does something (otherwise it sees no output no need to compute anything)
     );
 end pipe_risc_v_nn;
 

@@ -8,15 +8,15 @@ entity fifo_mem is
     port(
         clk_1       : in std_logic;
         clk_2       : in std_logic;
-        reset       : in std_logic;                     -- synchron Reset
+        reset       : in std_logic;                         -- synchron Reset
         data_in     : in std_logic_vector(31 downto 0);
-        write_data  : in std_logic;
-        read_data   : in std_logic;
+        write_data  : in std_logic;                         --if write_data is '1' the "write-site" wants to write data into the memory in this clockcyle
+        read_data   : in std_logic;                         --if  read_data is '1' the  "read-site" wants to  read data from the memory in this clockcyle
 
         --outputs
         data_out    : out std_logic_vector(31 downto 0);
-        can_write   : out std_logic;
-        can_read    : out std_logic
+        can_write   : out std_logic;                        --says wether it is allowed to write in this clockcycle or not
+        can_read    : out std_logic                         --says wether it is allowed to read  in this clockcycle or not
     );
 end fifo_mem;
 
@@ -24,7 +24,7 @@ end fifo_mem;
 architecture rtl of fifo_mem is
 
     signal write_vector, write_vector_com, read_vector : FOUR_BYTE_VECTOR(2**length-1 downto 0);
-    signal write_en                     : std_logic;
+    signal write_en                      : std_logic;
     signal can_write_i                   : std_logic := '1';
     signal can_read_i                    : std_logic := '0';
     signal read_en                       : std_logic := '0';
@@ -69,7 +69,7 @@ architecture rtl of fifo_mem is
             c=> write_vector_com);
 
 
-        write_Pointer : entity work.greyCodeCounter(rtl)
+        write_Pointer : entity work.greyCodeCounter(rtl)    --saves the write-Pointer. Outputs the write-Pointer as normal bit-vector and as grey-code.
         generic map(length)
         port map(
             --inputs
@@ -82,7 +82,7 @@ architecture rtl of fifo_mem is
             greyCode_out    => grey_write
         );
         
-        read_Pointer : entity work.greyCodeCounter(rtl)
+        read_Pointer : entity work.greyCodeCounter(rtl)     --saves the read-Pointer. Outputs the read-Pointer as normal bit-vector and as grey-code.
         generic map(length)
         port map(
             --inputs
@@ -95,7 +95,7 @@ architecture rtl of fifo_mem is
             greyCode_out    => grey_read
         );
 
-        stabilze_write : entity work.siso(rtl)
+        stabilze_write : entity work.siso(rtl)              -- is there to reduce the chance that the grey-code from the write Signal is in a metastable state
         generic map(size => 2, length => length)
         port map(
             --inputs
@@ -107,7 +107,7 @@ architecture rtl of fifo_mem is
             data_out    => grey_write_stable
         );
 
-        stabilze_read : entity work.siso(rtl)
+        stabilze_read : entity work.siso(rtl)               -- is there to reduce the chance that the grey-code from the read Signal is in a metastable state
         generic map(size => 2, length => length)
         port map(
             --inputs
@@ -119,14 +119,14 @@ architecture rtl of fifo_mem is
             data_out    => grey_read_stable
         );
 
-        greyWriteToBitWrite : entity work.greyCode_to_BitCode(rtl)
+        greyWriteToBitWrite : entity work.greyCode_to_BitCode(rtl)  --converts the grey-code from write-Pointer into the corresponding bit-vector to compare it against the read-Pointer
         generic map(length)
         port map(
           value_in    => grey_write_stable,
           value_out   => write_stable
         );
 
-        greyReadToBitRead : entity work.greyCode_to_BitCode(rtl)
+        greyReadToBitRead : entity work.greyCode_to_BitCode(rtl)    --converts the grey-code from read-Pointer into the corresponding bit-vector to compare it against the write-Pointer
         generic map(length)
         port map(
           value_in    => grey_read_stable,
@@ -142,8 +142,8 @@ architecture rtl of fifo_mem is
         can_read_i <= '1' when (pointer_read /= write_stable)
                            else '0';
 
-        write_en <= '1' when write_data = '1' and can_write_i = '1' else '0';
-        read_en  <= '1' when  read_data = '1' and can_read_i  = '1' else '0';
+        write_en <= '1' when write_data = '1' and can_write_i = '1' else '0';       --write_en is '1' when an write-Operation is executed this clockcyle
+        read_en  <= '1' when  read_data = '1' and can_read_i  = '1' else '0';       --write_en is '1' when an  read-Operation is executed this clockcyle
 
         can_write   <= can_write_i;
         can_read   <= can_read_i;

@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity greyCode_to_bitCode is
+entity greyCode_to_bitCode is         --converts the grey-code input into the corresponding bit-vector
   generic(length : integer := 32);
   port (
     value_in    : in std_logic_vector(length-1 downto 0);

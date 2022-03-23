@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity d_ff is
+entity d_ff is                          -- D-Flip-Flop with variable input-vector length
     generic(length : integer := 3); 
     port(
         --inputs

@@ -23,7 +23,7 @@ architecture rtl of greyCodeCounter is
     
     begin
         
-        bin_reg : entity work.d_ff(rtl)
+        bin_reg : entity work.d_ff(rtl)         --saves the counter
         generic map(length => length)
         port map(
             clk         => clk,
@@ -34,7 +34,7 @@ architecture rtl of greyCodeCounter is
             value_out   => b_i
             );
 
-        grey_reg : entity work.d_ff(rtl)
+        grey_reg : entity work.d_ff(rtl)        --saves the grey-code version of the counter
         generic map(length => length)
         port map(
             clk         => clk,
@@ -45,14 +45,14 @@ architecture rtl of greyCodeCounter is
             value_out   => g_i
             );
 
-        convert : entity work.bitCode_to_greyCode(rtl)
+        convert : entity work.bitCode_to_greyCode(rtl)      --converts the counter into the corresponding grey-code
         generic map(length => length)
         port map(
             value_in    => bnext,
             value_out   => gnext
             );
 
-        process(increment,b_i)begin
+        process(increment,b_i)begin                         --increments the counter by one if the increment-input is one. 
             if increment = '1' then
                 bnext <= std_logic_vector((unsigned(b_i) + 1) mod (2**length));
             else

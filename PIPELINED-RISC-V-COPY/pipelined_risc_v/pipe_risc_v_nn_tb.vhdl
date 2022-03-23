@@ -13,7 +13,7 @@ architecture test of pipe_risc_v_nn_tb is
     begin
         --instantiation pipelined risc v
         inst_pipelined_risc_v : entity work.pipe_risc_v_nn(rtl)
-        generic map(20,3)
+        generic map(2,3)
             port map (
                 clk_cpu             => clk_cpu,
                 reset           => reset,
@@ -34,7 +34,7 @@ architecture test of pipe_risc_v_nn_tb is
                 clk_cpu   <= '0';
                 reset <= '0';
                 wait for 5 ns;
-                for i in 1 to 50 loop
+                for i in 1 to 90 loop
                     clk_cpu <= '1';
                     wait for 10 ns;
                     clk_cpu <= '0';
@@ -55,7 +55,7 @@ architecture test of pipe_risc_v_nn_tb is
                 wait for 5 ns;
                 clk_nn   <= '0';
                 wait for 5 ns;
-                for i in 1 to 60 loop
+                for i in 1 to 100 loop
                     clk_nn <= '1';
                     wait for 8 ns;
                     clk_nn <= '0';

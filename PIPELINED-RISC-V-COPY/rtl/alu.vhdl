@@ -47,7 +47,7 @@ architecture rtl of ALU is
             end process;
 
 
-            inst_eightBitAdder : entity work.eightBitAdder(rtl)
+            inst_eightBitAdder : entity work.eightBitAdder(rtl)     --gate for the eight bit addition
             port map(
                 a => SrcA(7 downto 0),
                 b => SrcB(7 downto 0),

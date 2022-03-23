@@ -121,7 +121,7 @@ begin
         data_out        => data_out
     );
 
-    fifo_grid_matrix1 : entity work.fifo_grid(rtl)              -- zwischenspeicher for the frist matrix
+    fifo_grid_matrix1 : entity work.fifo_grid(rtl)                  --memory for the first matrix
     generic map (max_size => max_size)
     port map(
         --inputs
@@ -136,7 +136,7 @@ begin
         data_out    => data_out_grid1
     );
 
-    fifo_grid_matrix2 : entity work.fifo_grid_vertical(rtl)     -- zwischenspeicher for the second matrix
+    fifo_grid_matrix2 : entity work.fifo_grid_vertical(rtl)         --memory for the second matrix
     generic map(max_size => max_size)
     port map(
         --inputs
@@ -151,7 +151,7 @@ begin
         data_out    => data_out_grid2
     );
 
-    sa : entity work.sa(rtl)                                    -- multiplies the two matrix with eachother
+    sa : entity work.sa(rtl)                                    -- multiplies the two matrix with eachother (currently filler file)
     generic map(max_size)
     port map(
         clk => clk,
